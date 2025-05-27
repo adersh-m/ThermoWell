@@ -1,4 +1,4 @@
-const Resources = () => {
+const ResourcesPage = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Resources</h2>
@@ -7,4 +7,4 @@ const Resources = () => {
   );
 };
 
-export default Resources;
+export default ResourcesPage;

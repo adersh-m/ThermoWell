@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { type Advisory, mockAdvisories } from "../data/mockAdvisories";
 import AdvisoryCard from "../components/AdvisoryCard";
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const [advisories, setAdvisories] = useState<Advisory[]>([]);
 
   useEffect(() => {
@@ -24,4 +24,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;
