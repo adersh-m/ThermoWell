@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatwave Health Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            border-right: 1px solid #e9ecef;
+            padding: 20px 0;
+        }
+
+        .logo {
+            padding: 0 20px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .nav-item.active {
+            background-color: #e9ecef;
+        }
+
+        .nav-section {
+            margin-top: 30px;
+            padding: 0 20px;
+            color: #999;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 12px;
+            opacity: 0.7;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Status Cards */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .status-icon.info { background-color: #4285f4; }
+        .status-icon.warning { background-color: #4285f4; }
+        .status-icon.alert { background-color: #4285f4; }
+
+        .status-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .status-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .status-subtitle {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .status-button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .status-button:hover {
+            background-color: #3367d6;
+        }
+
+        /* Vulnerable Groups Section */
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 24px;
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        .group-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+        }
+
+        .group-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .group-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #4285f4;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .group-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .group-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .group-description {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .group-button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .group-button:hover {
+            background-color: #3367d6;
+        }
+
+        /* Map Section */
+        .map-section {
+            margin-bottom: 50px;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+            text-align: center;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            background-color: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+            margin: 0 auto;
+        }
+
+        /* Educational Resources */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+        }
+
+        .resource-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .resource-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #4285f4;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .resource-label {
+            font-size: 14px;
+            color: #4285f4;
+            font-weight: 500;
+        }
+
+        .resource-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .resource-description {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .resource-button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .resource-button:hover {
+            background-color: #3367d6;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+
+        .footer-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: #4285f4;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .footer-info {
+            font-size: 14px;
+        }
+
+        .footer-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .footer-role {
+            color: #666;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">Heatwave Health</div>
+            
+            <a href="#" class="nav-item active">
+                <div class="nav-icon">📊</div>
+                Dashboard
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">⚠️</div>
+                Advisories
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">📍</div>
+                Tips
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">📚</div>
+                Resources
+            </a>
+            
+            <div class="nav-section">Support</div>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">❓</div>
+                Help
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">⚙️</div>
+                Settings
+            </a>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1 class="page-title">Current Heatwave Status</h1>
+
+            <!-- Status Cards -->
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-icon info">i</div>
+                        <div class="status-label">Heat Level</div>
+                    </div>
+                    <div class="status-title">Extreme</div>
+                    <div class="status-subtitle">Temperature: 41°C<br>Feels like: 44°C</div>
+                    <button class="status-button">Learn More</button>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-icon warning">⚠</div>
+                        <div class="status-label">Advisory</div>
+                    </div>
+                    <div class="status-title">Stay Indoors</div>
+                    <div class="status-subtitle">High risk of heatstroke. Limit outdoor activity.</div>
+                    <button class="status-button">View Details</button>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-icon alert">🔔</div>
+                        <div class="status-label">Alerts</div>
+                    </div>
+                    <div class="status-title">2 New Alerts</div>
+                    <div class="status-subtitle">Urgent health advisories issued for your area.</div>
+                    <button class="status-button">See Alerts</button>
+                </div>
+            </div>
+
+            <!-- Vulnerable Groups -->
+            <section>
+                <h2 class="section-title">Vulnerable Groups</h2>
+                <div class="groups-grid">
+                    <div class="group-card">
+                        <div class="group-header">
+                            <div class="group-icon">👶</div>
+                            <div class="group-label">Children</div>
+                        </div>
+                        <div class="group-title">Hydration First</div>
+                        <div class="group-description">Encourage frequent water breaks and avoid midday sun.</div>
+                        <button class="group-button">Advice</button>
+                    </div>
+
+                    <div class="group-card">
+                        <div class="group-header">
+                            <div class="group-icon">👴</div>
+                            <div class="group-label">Elderly</div>
+                        </div>
+                        <div class="group-title">Stay Cool</div>
+                        <div class="group-description">Use fans, stay in shaded areas, and check on neighbors.</div>
+                        <button class="group-button">Advice</button>
+                    </div>
+
+                    <div class="group-card">
+                        <div class="group-header">
+                            <div class="group-icon">👷</div>
+                            <div class="group-label">Outdoor Workers</div>
+                        </div>
+                        <div class="group-title">Take Breaks</div>
+                        <div class="group-description">Rest in cool areas and wear light clothing.</div>
+                        <button class="group-button">Advice</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Heatwave Map -->
+            <section class="map-section">
+                <h2 class="section-title">Heatwave Map</h2>
+                <div class="map-container">
+                    <div class="map-placeholder">Interactive Heatwave Map will be displayed here</div>
+                </div>
+            </section>
+
+            <!-- Educational Resources -->
+            <section>
+                <h2 class="section-title">Educational Resources</h2>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-header">
+                            <div class="resource-icon">?</div>
+                            <div class="resource-label">What is a Heatwave?</div>
+                        </div>
+                        <div class="resource-title">Understanding Risks</div>
+                        <div class="resource-description">Learn how heatwaves impact health and safety.</div>
+                        <button class="resource-button">Read More</button>
+                    </div>
+
+                    <div class="resource-card">
+                        <div class="resource-header">
+                            <div class="resource-icon">🛡️</div>
+                            <div class="resource-label">Prevention</div>
+                        </div>
+                        <div class="resource-title">Stay Safe Tips</div>
+                        <div class="resource-description">Simple steps to reduce heat-related risks.</div>
+                        <button class="resource-button">View Tips</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-avatar">AM</div>
+                <div class="footer-info">
+                    <div class="footer-name">Alex Morgan</div>
+                    <div class="footer-role">Health Advisor</div>
+                </div>
+            </footer>
+        </main>
+    </div>
+</body>
+</html>

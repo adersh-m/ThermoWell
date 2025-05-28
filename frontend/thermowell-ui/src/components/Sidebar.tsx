@@ -1,50 +1,93 @@
-import { NavLink } from "react-router-dom";
-import DashboardIcon from "../assets/icons/dashboard.png";
-import AdvisoryIcon from "../assets/icons/advisories.png";
-import TipsIcon from "../assets/icons/tips.png";
-import ResourcesIcon from "../assets/icons/resources.png";
-import HelpIcon from "../assets/icons/help.png";
-import SettingsIcon from "../assets/icons/settings.png";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
+  const location = useLocation();
+
+  const navItems = [
+    { icon: '📊', label: 'Dashboard', path: '/dashboard' },
+    { icon: '⚠️', label: 'Advisories', path: '/advisories' },
+    { icon: '🌡️', label: 'Health Score', path: '/health-score' },
+    { icon: '📍', label: 'Tips', path: '/tips' },
+    { icon: '📚', label: 'Resources', path: '/resources' }
+  ];
+
+  const supportItems = [
+    { icon: '❓', label: 'Help', path: '/help' },
+    { icon: '⚙️', label: 'Settings', path: '/settings' }
+  ];
+
+  const isActive = (path: string) => location.pathname === path;
+
   return (
-    <div className="w-60 h-screen bg-gray-100 shadow-md p-4 fixed ml-3">
-      <h1 className="text-xl font-bold mb-6">🌡️ ThermoWell</h1>
-      <nav className="flex flex-col gap-4">
-        <NavLink to="/" className={({ isActive }) => isActive ? "text-blue-600 font-semibold" : "text-gray-700"}>
-          <img src={DashboardIcon} alt="Dashboard" className="inline-block w-5 h-5 mr-2" />
-          Dashboard
-        </NavLink>
-        <NavLink to="/advisories" className={({ isActive }) => isActive ? "text-blue-600 font-semibold" : "text-gray-700"}>
-          <img src={AdvisoryIcon} alt="Dashboard" className="inline-block w-5 h-5 mr-2" />
-          Advisories
-        </NavLink>
-        <NavLink to="/tips" className={({ isActive }) => isActive ? "text-blue-600 font-semibold" : "text-gray-700"}>
-          <img src={TipsIcon} alt="Dashboard" className="inline-block w-5 h-5 mr-2" />
-          Tips
-        </NavLink>
-        <NavLink to="/resources" className={({ isActive }) => isActive ? "text-blue-600 font-semibold" : "text-gray-700"}>
-          <img src={ResourcesIcon} alt="Dashboard" className="inline-block w-5 h-5 mr-2" />
-          Resources
-        </NavLink>
-         <NavLink to="/health-score" className={({ isActive }) => isActive ? "text-blue-600 font-semibold" : "text-gray-700"}>
-          <img src={ResourcesIcon} alt="HealthScore" className="inline-block w-5 h-5 mr-2" />
-          Health Score
-        </NavLink>
-      </nav>
-      <h2 className="text-md font-bold my-6">Support</h2>
-      <nav className="flex flex-col gap-4">
-        <NavLink to="/help" className={({ isActive }) => isActive ? "text-blue-600 font-semibold" : "text-gray-700"}>
-          <img src={HelpIcon} alt="Help" className="inline-block w-5 h-5 mr-2" />
-          Help
-        </NavLink>
-        <NavLink to="/settings" className={({ isActive }) => isActive ? "text-blue-600 font-semibold" : "text-gray-700"}>
-          <img src={SettingsIcon} alt="Settings" className="inline-block w-5 h-5 mr-2" />
-          Settings
-        </NavLink>
-        
-      </nav>
-    </div>
+    <nav style={{
+      width: '240px',
+      backgroundColor: 'var(--color-card)',
+      borderRight: 'var(--border-card)',
+      padding: '20px 0'
+    }}>
+      <div style={{
+        padding: '0 20px 30px',
+        fontSize: '16px',
+        fontWeight: '600',
+        color: 'var(--color-primary-text)'
+      }}>
+        Heatwave Health
+      </div>
+
+      {navItems.map((item) => (
+        <Link
+          key={item.path}
+          to={item.path}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '12px 20px',
+            color: isActive(item.path) ? 'var(--color-primary-text)' : 'var(--color-secondary-text)',
+            textDecoration: 'none',
+            fontSize: '14px',
+            backgroundColor: isActive(item.path) ? '#e9ecef' : 'transparent',
+            transition: 'background-color 0.2s'
+          }}
+        >
+          <span style={{ marginRight: '12px', opacity: 0.7 }}>{item.icon}</span>
+          {item.label}
+        </Link>
+      ))}
+
+      <div style={{
+        marginTop: '30px',
+        padding: '0 20px',
+        color: 'var(--color-tertiary-text)',
+        fontSize: '12px',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        marginBottom: '10px'
+      }}>
+        Support
+      </div>
+
+      {supportItems.map((item) => (
+        <Link
+          key={item.path}
+          to={item.path}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '12px 20px',
+            color: isActive(item.path) ? 'var(--color-primary-text)' : 'var(--color-secondary-text)',
+            textDecoration: 'none',
+            fontSize: '14px',
+            backgroundColor: isActive(item.path) ? '#e9ecef' : 'transparent',
+            transition: 'background-color 0.2s'
+          }}
+        >
+          <span style={{ marginRight: '12px', opacity: 0.7 }}>{item.icon}</span>
+          {item.label}
+        </Link>
+      ))}
+    </nav>
   );
 };
 

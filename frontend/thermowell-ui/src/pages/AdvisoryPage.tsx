@@ -1,36 +1,144 @@
-import { Link, useParams } from "react-router-dom";
-import { mockAdvisories } from "../data/mockAdvisories";
+import React, { useState } from 'react';
 
-const AdvisoryPage = () => {
-  const { id } = useParams<{ id: string }>();
-  const advisory = mockAdvisories.find(a => a.id === Number(id));
+const AdvisoryPage: React.FC = () => {
+  const [selectedGroup, setSelectedGroup] = useState('All');
 
-  if (!advisory) {
-    return (
-      <div className="p-6">
-        <h2 className="text-xl font-bold text-red-600">Advisory Not Found</h2>
-        <p className="mt-2 text-gray-600">Please check the URL or go back to the dashboard.</p>
-      </div>
-    );
-  }
-
-  const severityStyles = {
-    High: "bg-red-100 text-red-800 border-red-300",
-    Moderate: "bg-yellow-100 text-yellow-800 border-yellow-300",
-    Low: "bg-green-100 text-green-800 border-green-300",
+  const currentAdvisory = {
+    type: 'Current Advisory',
+    title: 'Extreme Heat Warning',
+    description: 'Temperatures above 40°C. High risk for heatstroke. Stay indoors and hydrate.',
+    time: 'Today, 10:00 AM',
+    validUntil: 'Advisory valid until 8:00 PM. Updates will be provided as conditions change.'
   };
 
+  const urgentAlerts = [
+    {
+      risk: 'Heatstroke risk: High',
+      action: 'Limit outdoor activity',
+      time: '09:45 AM',
+      status: 'Active'
+    },
+    {
+      risk: 'Medical advisory: Elderly',
+      action: 'Check on neighbors',
+      time: '09:30 AM',
+      status: 'Active'
+    }
+  ];
+
+  const groups = ['All', 'Children', 'Elderly', 'Outdoor Workers'];
+
+  const groupAdvisories = [
+    {
+      group: 'Children',
+      title: 'Hydration Alert',
+      description: 'Encourage water breaks every 30 minutes.'
+    },
+    {
+      group: 'Elderly',
+      title: 'Stay Cool',
+      description: 'Use fans and avoid direct sun.'
+    },
+    {
+      group: 'Outdoor Workers',
+      title: 'Rest Breaks',
+      description: 'Take breaks in shaded areas.'
+    }
+  ];
+
   return (
-    <>
-      <Link to="/" className="text-blue-600 underline my-6 block">
-        ← Back to Dashboard
-      </Link><div className={`p-6 border-l-4 ${severityStyles[advisory.severity]} rounded`}>
-        <h2 className="text-2xl font-bold mb-2">{advisory.title}</h2>
-        <p className="mb-4 text-gray-700">{advisory.message}</p>
-        <span className="inline-block px-3 py-1 text-sm font-semibold rounded bg-opacity-75">
-          Severity: {advisory.severity}
-        </span>
-      </div></>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-gray-900 mb-10">
+        Active Advisories
+      </h1>
+
+      {/* Current Advisory */}
+      <div className="bg-white rounded-xl shadow p-6 mb-12">
+        <div className="mb-3">
+          <div className="text-heat text-sm font-semibold mb-1">
+            {currentAdvisory.type}
+          </div>
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+            <div className="font-semibold text-lg mb-1 md:mb-0">
+              {currentAdvisory.title}
+            </div>
+            <div className="text-xs text-gray-500">
+              {currentAdvisory.time}
+            </div>
+          </div>
+        </div>
+        <div className="text-gray-700 mb-2">
+          {currentAdvisory.description}
+        </div>
+        <div className="text-xs text-gray-400">
+          {currentAdvisory.validUntil}
+        </div>
+      </div>
+
+      {/* Urgent Alerts */}
+      <section className="mb-12">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Urgent Alerts
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {urgentAlerts.map((alert, index) => (
+            <div key={index} className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 flex flex-col gap-1 shadow">
+              <div className="font-semibold text-red-700">
+                {alert.risk}
+              </div>
+              <div className="text-sm text-red-600">
+                {alert.action}
+              </div>
+              <div className="text-xs text-gray-500">
+                Issued: {alert.time}
+              </div>
+              <div className="text-xs text-red-500 font-semibold">
+                Status: {alert.status}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Advisories by Group */}
+      <section>
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Advisories by Group
+        </h2>
+        <div className="flex gap-4 mb-6">
+          {groups.map((group) => (
+            <button
+              key={group}
+              onClick={() => setSelectedGroup(group)}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-150 ${
+                selectedGroup === group
+                  ? 'bg-heat text-white border-heat'
+                  : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+              }`}
+            >
+              {group}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {groupAdvisories
+            .filter(advisory => selectedGroup === 'All' || advisory.group === selectedGroup)
+            .map((advisory, index) => (
+              <div key={index} className="bg-white rounded-xl shadow p-6 flex flex-col gap-2">
+                <div className="font-semibold text-lg mb-1">
+                  {advisory.title}
+                </div>
+                <div className="text-gray-700 text-sm">
+                  {advisory.description}
+                </div>
+                <div className="text-xs text-gray-400">
+                  Group: {advisory.group}
+                </div>
+              </div>
+            ))}
+        </div>
+      </section>
+    </div>
   );
 };
 
