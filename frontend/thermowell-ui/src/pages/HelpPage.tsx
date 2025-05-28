@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const HelpPage: React.FC = () => {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0);
@@ -54,22 +55,13 @@ const HelpPage: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-10">
-        Help & Support
-      </h1>
-
-      {/* Quick Help Card */}
-      <div className="bg-gradient-to-r from-heat to-blue-400 text-white rounded-xl shadow p-8 mb-10">
-        <div className="font-semibold text-xl mb-2">
-          Need Immediate Assistance?
-        </div>
-        <p className="mb-4 text-white/90">
-          If you're experiencing a heat-related emergency, please call emergency services immediately.
+      {/* Header Section */}
+      <section className="rounded-2xl shadow-lg bg-white text-gray-800 text-center p-10 mb-12">
+        <h1 className="text-5xl font-bold mb-4">Help & FAQs</h1>
+        <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
+          Find answers to common questions and learn how to stay safe during heatwaves.
         </p>
-        <div className="bg-white/20 rounded-lg p-4">
-          <span className="font-semibold">Emergency: 911</span>
-        </div>
-      </div>
+      </section>
 
       {/* FAQ Section */}
       <section className="mb-12">
@@ -79,16 +71,11 @@ const HelpPage: React.FC = () => {
         <div className="flex flex-col gap-4">
           {faqs.map((faq, index) => (
             <div key={index} className="bg-white rounded-xl shadow p-6">
-              <button
-                className="w-full text-left font-medium text-lg text-heat flex justify-between items-center"
-                onClick={() => toggleFaq(index)}
-              >
+              <button className="w-full text-left font-medium text-lg text-gray-800 flex justify-between items-center">
                 {faq.question}
                 <span>{expandedFaq === index ? '-' : '+'}</span>
               </button>
-              {expandedFaq === index && (
-                <div className="mt-3 text-gray-700 text-sm">{faq.answer}</div>
-              )}
+              {expandedFaq === index && <div className="mt-3 text-gray-700 text-sm">{faq.answer}</div>}
             </div>
           ))}
         </div>

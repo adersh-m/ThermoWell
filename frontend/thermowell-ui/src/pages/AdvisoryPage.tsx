@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { AdvisoryService } from '../services/AdvisoryService';
+import type { GroupAdvisory, UrgentAlert } from '../services/AdvisoryService';
+import { Link } from 'react-router-dom';
 
 const AdvisoryPage: React.FC = () => {
   const [selectedGroup, setSelectedGroup] = useState('All');
+  const [groupAdvisories, setGroupAdvisories] = useState<GroupAdvisory[]>([]);
+  const [urgentAlerts, setUrgentAlerts] = useState<UrgentAlert[]>([]);
+
+  useEffect(() => {
+    AdvisoryService.fetchGroupAdvisories().then((data: GroupAdvisory[]) => setGroupAdvisories(data));
+    AdvisoryService.fetchUrgentAlerts().then((data: UrgentAlert[]) => setUrgentAlerts(data));
+  }, []);
 
   const currentAdvisory = {
     type: 'Current Advisory',
@@ -11,75 +21,34 @@ const AdvisoryPage: React.FC = () => {
     validUntil: 'Advisory valid until 8:00 PM. Updates will be provided as conditions change.'
   };
 
-  const urgentAlerts = [
-    {
-      risk: 'Heatstroke risk: High',
-      action: 'Limit outdoor activity',
-      time: '09:45 AM',
-      status: 'Active'
-    },
-    {
-      risk: 'Medical advisory: Elderly',
-      action: 'Check on neighbors',
-      time: '09:30 AM',
-      status: 'Active'
-    }
-  ];
-
   const groups = ['All', 'Children', 'Elderly', 'Outdoor Workers'];
-
-  const groupAdvisories = [
-    {
-      group: 'Children',
-      title: 'Hydration Alert',
-      description: 'Encourage water breaks every 30 minutes.'
-    },
-    {
-      group: 'Elderly',
-      title: 'Stay Cool',
-      description: 'Use fans and avoid direct sun.'
-    },
-    {
-      group: 'Outdoor Workers',
-      title: 'Rest Breaks',
-      description: 'Take breaks in shaded areas.'
-    }
-  ];
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-10">
-        Active Advisories
-      </h1>
+      {/* Hero Section */}
+      <section className="rounded-2xl shadow-lg bg-white text-gray-800 text-center p-10 mb-12">
+        <h1 className="text-5xl font-bold mb-4">Advisories</h1>
+        <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
+          Stay updated with the latest heatwave advisories and safety measures.
+        </p>
+        <div className="flex flex-col md:flex-row gap-4 justify-center">
+          <Link to="/tips" className="btn-primary text-lg font-semibold">View Tips</Link>
+          <Link to="/resources" className="btn-secondary text-lg font-semibold">Explore Resources</Link>
+        </div>
+      </section>
+
+      <h1 className="heading mb-10">Active Advisories</h1>
 
       {/* Current Advisory */}
-      <div className="bg-white rounded-xl shadow p-6 mb-12">
-        <div className="mb-3">
-          <div className="text-heat text-sm font-semibold mb-1">
-            {currentAdvisory.type}
-          </div>
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-            <div className="font-semibold text-lg mb-1 md:mb-0">
-              {currentAdvisory.title}
-            </div>
-            <div className="text-xs text-gray-500">
-              {currentAdvisory.time}
-            </div>
-          </div>
-        </div>
-        <div className="text-gray-700 mb-2">
-          {currentAdvisory.description}
-        </div>
-        <div className="text-xs text-gray-400">
-          {currentAdvisory.validUntil}
-        </div>
+      <div className="card bg-white shadow p-6 mb-12">
+        <div className="text-secondary text-sm font-semibold mb-1">{currentAdvisory.type}</div>
+        <div className="subheading mb-1">{currentAdvisory.title}</div>
+        <div className="text-gray-600 mb-2">{currentAdvisory.description}</div>
       </div>
 
       {/* Urgent Alerts */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Urgent Alerts
-        </h2>
+        <h2 className="subheading mb-4">Urgent Alerts</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {urgentAlerts.map((alert, index) => (
             <div key={index} className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 flex flex-col gap-1 shadow">
@@ -102,9 +71,8 @@ const AdvisoryPage: React.FC = () => {
 
       {/* Advisories by Group */}
       <section>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Advisories by Group
-        </h2>
+        <h2 className="subheading mb-4">Advisories by Group</h2>
+        {/* Improved tab selection colors and alignments */}
         <div className="flex gap-4 mb-6">
           {groups.map((group) => (
             <button
@@ -112,7 +80,7 @@ const AdvisoryPage: React.FC = () => {
               onClick={() => setSelectedGroup(group)}
               className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-150 ${
                 selectedGroup === group
-                  ? 'bg-heat text-white border-heat'
+                  ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-blue-500'
                   : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
               }`}
             >
@@ -124,11 +92,11 @@ const AdvisoryPage: React.FC = () => {
           {groupAdvisories
             .filter(advisory => selectedGroup === 'All' || advisory.group === selectedGroup)
             .map((advisory, index) => (
-              <div key={index} className="bg-white rounded-xl shadow p-6 flex flex-col gap-2">
-                <div className="font-semibold text-lg mb-1">
+              <div key={index} className="card">
+                <div className="subheading mb-1">
                   {advisory.title}
                 </div>
-                <div className="text-gray-700 text-sm">
+                <div className="text-primary">
                   {advisory.description}
                 </div>
                 <div className="text-xs text-gray-400">

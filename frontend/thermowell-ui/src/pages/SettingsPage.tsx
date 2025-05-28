@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('Profile');
@@ -26,7 +27,16 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-10">Account Settings</h1>
+      <section className="rounded-2xl shadow-lg bg-white text-gray-800 text-center p-10 mb-12">
+        <h1 className="text-5xl font-bold mb-4">Account Settings</h1>
+        <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
+          Manage your profile, notifications, and preferences to stay updated.
+        </p>
+        <div className="flex flex-col md:flex-row gap-4 justify-center">
+          <Link to="/profile" className="btn-primary text-lg font-semibold">Edit Profile</Link>
+          <Link to="/notifications" className="btn-secondary text-lg font-semibold">Manage Notifications</Link>
+        </div>
+      </section>
 
       {/* Tabs */}
       <div className="flex gap-8 border-b border-gray-200 mb-8">
@@ -67,54 +77,28 @@ const SettingsPage: React.FC = () => {
           </div>
 
           {/* Contact Details */}
-          <div className="mb-6">
-            <div className="text-xs font-semibold text-gray-500 mb-2">Contact Details</div>
+          <div className="card p-6 mb-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <div className="text-xs text-gray-400 mb-1">Full Name</div>
-                <div className="bg-gray-50 rounded-md p-3 text-sm">
-                  {userProfile.name}
-                </div>
+                <h3 className="subheading mb-2">Name</h3>
+                <p className="text-primary">{userProfile.name}</p>
               </div>
               <div>
-                <div className="text-xs text-gray-400 mb-1">Email</div>
-                <div className="bg-gray-50 rounded-md p-3 text-sm">
-                  {userProfile.email}
-                </div>
+                <h3 className="subheading mb-2">Email</h3>
+                <p className="text-primary">{userProfile.email}</p>
+              </div>
+              <div>
+                <h3 className="subheading mb-2">Phone</h3>
+                <p className="text-primary">{userProfile.phone}</p>
+              </div>
+              <div>
+                <h3 className="subheading mb-2">City</h3>
+                <p className="text-primary">{userProfile.city}</p>
               </div>
             </div>
-          </div>
-
-          {/* Phone Number */}
-          <div className="mb-6">
-            <div className="text-xs font-semibold text-gray-500 mb-2">Phone Number</div>
-            <div>
-              <div className="text-xs text-gray-400 mb-1">Phone</div>
-              <div className="bg-gray-50 rounded-md p-3 text-sm">
-                {userProfile.phone}
-              </div>
-            </div>
-          </div>
-
-          {/* Location */}
-          <div className="mb-6">
-            <div className="text-xs font-semibold text-gray-500 mb-2">Location</div>
-            <div>
-              <div className="text-xs text-gray-400 mb-1">City</div>
-              <div className="bg-gray-50 rounded-md p-3 text-sm">
-                {userProfile.city}
-              </div>
-            </div>
-          </div>
-
-          {/* Bio */}
-          <div className="mb-8">
-            <div className="text-xs font-semibold text-gray-500 mb-2">Bio</div>
-            <div>
-              <div className="text-xs text-gray-400 mb-1">About You</div>
-              <div className="bg-gray-50 rounded-md p-3 text-sm min-h-[80px]">
-                {userProfile.bio}
-              </div>
+            <div className="mt-4">
+              <h3 className="subheading mb-2">Bio</h3>
+              <p className="text-primary">{userProfile.bio}</p>
             </div>
           </div>
 

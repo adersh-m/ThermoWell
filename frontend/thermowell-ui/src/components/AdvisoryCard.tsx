@@ -1,18 +1,30 @@
-import type { Advisory } from "../data/mockAdvisories";
+import { AdvisoryService } from "../services/AdvisoryService";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import type { Advisory } from "../data/mockAdvisories";
 
-type Props = {
-  advisory: Advisory;
-};
+const AdvisoryCard = ({ advisoryId }: { advisoryId: number }) => {
+  const [advisory, setAdvisory] = useState<Advisory | null>(null);
 
-const severityColorMap = {
-  Low: "bg-green-100 text-green-800",
-  Moderate: "bg-yellow-100 text-yellow-800",
-  High: "bg-red-100 text-red-800",
-};
+  useEffect(() => {
+    const fetchAdvisory = async () => {
+      const data = await AdvisoryService.getAdvisoryById(advisoryId);
+      setAdvisory(data);
+    };
+    fetchAdvisory();
+  }, [advisoryId]);
 
-const AdvisoryCard = ({ advisory }: Props) => {
-  const severityClass = severityColorMap[advisory.severity];
+  if (!advisory) {
+    return <div>Loading...</div>;
+  }
+
+  const severityColorMap = {
+    Low: "bg-green-100 text-green-800",
+    Moderate: "bg-yellow-100 text-yellow-800",
+    High: "bg-red-100 text-red-800",
+  };
+
+  const severityClass = severityColorMap[advisory.severity as keyof typeof severityColorMap];
 
   return (
     <Link to={`/advisories/${advisory.id}`}>
