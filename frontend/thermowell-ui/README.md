@@ -11,6 +11,7 @@ ThermoWell is a heatwave safety and monitoring application designed to protect u
 - [UI Standardization](#ui-standardization)
 - [User Journey Documentation](#user-journey-documentation)
 - [Additional Documentation](#additional-documentation)
+- [Deployment](#deployment)
 - [Technical Setup](#technical-setup)
 
 ## Application Overview
@@ -266,6 +267,24 @@ The following additional documentation files are available in the project root:
 - **[BUTTON_STANDARDIZATION.md](./BUTTON_STANDARDIZATION.md)**: Comprehensive button styling guidelines
 - **[ROADMAP.md](./ROADMAP.md)**: Future development plans and feature roadmap
 - **[TODO.md](./TODO.md)**: Current tasks and development priorities
+
+## Deployment
+
+ThermoWell is deployed and accessible online:
+
+- **Production URL**: [https://thermowell.vercel.app](https://thermowell.vercel.app)
+- **Deployment Platform**: Vercel
+- **Deployment Date**: June 2, 2025
+
+### Deployment Features
+
+- **Continuous Deployment**: Automatic deployments from the main branch
+- **Preview Deployments**: Every pull request gets a unique preview URL
+- **Edge Network**: Global CDN for fast access worldwide
+- **Client-Side Routing**: Proper handling of React Router paths
+- **Secure HTTPS**: Automatic SSL certificates
+
+For detailed deployment instructions and configuration, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ## Technical Setup
 
