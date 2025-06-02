@@ -17,14 +17,34 @@ const NavBar: React.FC = () => {
         Home
       </NavLink>
       <NavLink
-        to="/advisory"
+        to="/advisories"
         className={({ isActive }) =>
           isActive
             ? "text-blue-600 font-semibold border-b-2 border-blue-600"
             : "text-gray-600 hover:text-blue-600"
         }
       >
-        Advisory
+        Advisories
+      </NavLink>
+      <NavLink
+        to="/tips"
+        className={({ isActive }) =>
+          isActive
+            ? "text-blue-600 font-semibold border-b-2 border-blue-600"
+            : "text-gray-600 hover:text-blue-600"
+        }
+      >
+        Tips
+      </NavLink>
+      <NavLink
+        to="/resources"
+        className={({ isActive }) =>
+          isActive
+            ? "text-blue-600 font-semibold border-b-2 border-blue-600"
+            : "text-gray-600 hover:text-blue-600"
+        }
+      >
+        Resources
       </NavLink>
     </nav>
   );

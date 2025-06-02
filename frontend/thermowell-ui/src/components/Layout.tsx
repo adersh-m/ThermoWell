@@ -1,5 +1,6 @@
 import React from 'react';
 import Sidebar from './Sidebar';
+import TopBar from './TopBar';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -7,18 +8,14 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="layout-container" style={{
-      display: 'flex',
-      minHeight: '100vh'
-    }}>
+    <div className="flex min-h-screen">
       <Sidebar />
-      <main style={{
-        flex: 1,
-        padding: '40px',
-        backgroundColor: 'var(--color-background)'
-      }}>
-        {children}
-      </main>
+      <div className="flex-1 flex flex-col min-h-screen">
+        <TopBar />
+        <main className="flex-1 px-0 md:px-10 py-8 bg-gray-50">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };

@@ -95,10 +95,10 @@ const HealthScoreForm = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
+    <div className="max-w-3xl mx-auto font-sans">
+      <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
         {/* Form Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-start">
           {/* Left Column */}
           <div className="space-y-6">
             <div>
@@ -107,13 +107,12 @@ const HealthScoreForm = () => {
                 type="number"
                 min="0"
                 max="120"
-                className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out text-base md:text-lg px-3 md:px-4 py-2"
                 value={age}
                 onChange={(e) => setAge(Number(e.target.value))}
                 placeholder="Enter your age"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Hours spent outdoors today</label>
               <input
@@ -121,13 +120,12 @@ const HealthScoreForm = () => {
                 min="0"
                 max="24"
                 step="0.5"
-                className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out text-lg px-4 py-2"
                 value={outdoorHours}
                 onChange={(e) => setOutdoorHours(Number(e.target.value))}
                 placeholder="Hours outside"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Cups of water consumed</label>
               <input
@@ -135,17 +133,16 @@ const HealthScoreForm = () => {
                 min="0"
                 max="24"
                 step="0.5"
-                className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out text-lg px-4 py-2"
                 value={hydration}
                 onChange={(e) => setHydration(Number(e.target.value))}
                 placeholder="Cups of water"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Activity Level</label>
               <select
-                className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out text-lg px-4 py-2"
                 value={activityLevel}
                 onChange={(e) => setActivityLevel(e.target.value)}
               >
@@ -155,7 +152,6 @@ const HealthScoreForm = () => {
               </select>
             </div>
           </div>
-
           {/* Right Column */}
           <div className="space-y-6">
             <div>
@@ -180,7 +176,6 @@ const HealthScoreForm = () => {
                 ))}
               </div>
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">Current Symptoms</label>
               <div className="grid grid-cols-2 gap-3 bg-gray-50 p-4 rounded-lg">
@@ -201,17 +196,15 @@ const HealthScoreForm = () => {
             </div>
           </div>
         </div>
-
         {/* Calculate Button */}
-        <div>
+        <div className="mt-2 md:mt-4">
           <button
             onClick={calculateScore}
-            className="w-full bg-heat text-white font-medium px-6 py-3 rounded-lg hover:bg-heat/90 focus:outline-none focus:ring-2 focus:ring-heat focus:ring-offset-2 transition duration-150 ease-in-out"
+            className="btn-primary w-full text-base md:text-lg"
           >
             Calculate Health Score
           </button>
         </div>
-
         {/* Results Section */}
         {result && (
           <div className="mt-6">
@@ -225,12 +218,12 @@ const HealthScoreForm = () => {
                 <h3 className="text-xl font-semibold">
                   Health Score: {result.score}
                 </h3>
-                <span className="px-3 py-1 text-sm font-medium rounded-full ${
+                <span className={`px-3 py-1 text-sm font-medium rounded-full ${
                   result.riskLevel === 'low' ? 'bg-green-100' :
                   result.riskLevel === 'moderate' ? 'bg-yellow-100' :
                   result.riskLevel === 'high' ? 'bg-orange-100' :
                   'bg-red-100'
-                }">
+                }`}>
                   {result.riskLevel.charAt(0).toUpperCase() + result.riskLevel.slice(1)} Risk
                 </span>
               </div>
@@ -254,3 +247,4 @@ const HealthScoreForm = () => {
 };
 
 export default HealthScoreForm;
+

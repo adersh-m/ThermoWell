@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 
 const HelpPage: React.FC = () => {
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(0);
-  
+  const [expandedFaq, setExpandedFaq] = React.useState<number | null>(null);
+
   const faqs = [
     {
       question: 'What is a heatwave?',
@@ -46,58 +45,65 @@ const HelpPage: React.FC = () => {
   ];
 
   const toggleFaq = (index: number) => {
-    if (expandedFaq === index) {
-      setExpandedFaq(null);
-    } else {
-      setExpandedFaq(index);
-    }
+    setExpandedFaq(expandedFaq === index ? null : index);
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Header Section */}
-      <section className="rounded-2xl shadow-lg bg-white text-gray-800 text-center p-10 mb-12">
-        <h1 className="text-5xl font-bold mb-4">Help & FAQs</h1>
-        <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
+    <div className="max-w-4xl mx-auto px-6 py-10">
+      {/* Hero Section */}
+      <section className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4">Help & FAQs</h1>
+        <p className="text-lg text-gray-600">
           Find answers to common questions and learn how to stay safe during heatwaves.
         </p>
       </section>
-
       {/* FAQ Section */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Frequently Asked Questions
-        </h2>
-        <div className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold mb-6">Frequently Asked Questions</h2>
+        <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="bg-white rounded-xl shadow p-6">
-              <button className="w-full text-left font-medium text-lg text-gray-800 flex justify-between items-center">
+            <div key={index} className="border border-gray-200 rounded-lg p-4 bg-white">
+              <button
+                className="w-full text-left flex justify-between items-center text-lg font-medium text-gray-800 hover:text-blue-600 transition-colors"
+                onClick={() => toggleFaq(index)}
+              >
                 {faq.question}
-                <span>{expandedFaq === index ? '-' : '+'}</span>
+                <span className="text-blue-600 font-bold text-xl">{expandedFaq === index ? '-' : '+'}</span>
               </button>
-              {expandedFaq === index && <div className="mt-3 text-gray-700 text-sm">{faq.answer}</div>}
+              {expandedFaq === index && (
+                <p className="mt-3 text-gray-700">{faq.answer}</p>
+              )}
             </div>
           ))}
         </div>
       </section>
-
       {/* Contact Methods */}
       <section>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Contact Us
-        </h2>
-        <div className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold mb-6">Contact Us</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {contactMethods.map((method, index) => (
-            <div key={index} className="bg-white rounded-xl shadow p-6 flex items-center gap-4">
-              <div className="text-2xl bg-gray-100 rounded w-12 h-12 flex items-center justify-center">{method.icon}</div>
+            <div key={index} className="border rounded-lg p-4 flex items-center gap-4">
+              <div className="text-3xl bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center">
+                {method.icon}
+              </div>
               <div>
-                <div className="font-semibold text-base mb-1">{method.method}</div>
-                <div className="text-gray-700 text-sm">{method.details}</div>
+                <p className="font-semibold text-lg">{method.method}</p>
+                <p className="text-gray-600">{method.details}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
+      {/* Footer */}
+      <footer className="mt-12 pt-8 border-t border-gray-200 flex items-center">
+        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+          AM
+        </div>
+        <div>
+          <div className="font-semibold text-gray-900">Alex Morgan</div>
+          <div className="text-gray-600 text-sm">Health Advisor</div>
+        </div>
+      </footer>
     </div>
   );
 };

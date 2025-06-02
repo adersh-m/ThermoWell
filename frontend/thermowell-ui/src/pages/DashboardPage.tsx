@@ -1,145 +1,257 @@
-import React, { useEffect, useState } from "react";
-import AdvisoryCard from "../components/AdvisoryCard";
-import { AdvisoryService } from "../services/AdvisoryService";
-import { DashboardService } from "../services/DashboardService";
-import { Link, useNavigate } from "react-router-dom";
-import type { Advisory } from "../data/mockAdvisories";
+import React, { useState } from "react";
+import HeatwaveMap from "../components/HeatwaveMap";
+
+const VULNERABLE_GROUPS = [
+	{
+		icon: "👶",
+		label: "Children",
+		getAdvice: (region: string) =>
+			region === "Bangkok"
+				? "Encourage water breaks and avoid outdoor play during peak heat."
+				: "Encourage frequent water breaks and avoid midday sun.",
+	},
+	{
+		icon: "👴",
+		label: "Elderly",
+		getAdvice: (region: string) =>
+			region === "Singapore"
+				? "Check on elderly neighbors and use cooling centers if needed."
+				: "Use fans, stay in shaded areas, and check on neighbors.",
+	},
+	{
+		icon: "👷",
+		label: "Outdoor Workers",
+		getAdvice: (region: string) =>
+			region === "Jakarta"
+				? "Take breaks in cool areas and drink water every hour."
+				: "Rest in cool areas and wear light clothing.",
+	},
+];
 
 const DashboardPage: React.FC = () => {
-  const [advisories, setAdvisories] = useState<Advisory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+	const [selectedRegion, setSelectedRegion] = useState("Manila");
 
-  useEffect(() => {
-    AdvisoryService.fetchAdvisories().then((data: Advisory[]) => {
-      setAdvisories(data);
-      setLoading(false);
-    });
-  }, []);
+	// Helper for navigation
+	const navigateTo = (path: string) => {
+		window.location.href = path;
+	};
 
-  const statusCards = DashboardService.fetchStatusCards();
-  const vulnerableGroups = DashboardService.fetchVulnerableGroups();
-  const resources = DashboardService.fetchResources();
-
-  return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-12">
-      <section className="text-center py-6">
-        <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
-        <p className="text-gray-600 text-base">
-          Insights into heatwave advisories and personalized recommendations.
-        </p>
-      </section>
-
-      <section>
-        <h1 className="section-title text-center mb-10">Current Heatwave Status</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {statusCards.map((card, index) => (
-            <div
-              key={index}
-              className="card items-center text-center bg-white shadow p-6"
-              style={{ minHeight: "320px", justifyContent: "center" }}
-            >
-              <div className="text-5xl mb-4 text-gray-800">{card.icon}</div>
-              <div className="font-bold text-2xl mb-2 text-gray-900">{card.title}</div>
-              <div className="text-gray-600 text-base whitespace-pre-line mb-6">
-                {card.subtitle}
-              </div>
-              <button
-                className="btn-primary mt-auto"
-                style={{ minWidth: "120px", minHeight: "48px" }}
-                onClick={() => {
-                  if (card.label === "Heat Level") navigate("/health-score");
-                  else if (card.label === "Advisory") navigate("/advisories");
-                  else if (card.label === "Alerts") navigate("/advisories");
-                }}
-              >
-                {card.buttonText}
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="section-title text-center mb-6">Vulnerable Groups</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {vulnerableGroups.map((group, index) => (
-            <div
-              key={index}
-              className="card flex flex-col items-center text-center bg-white shadow p-6"
-            >
-              <div className="text-3xl mb-2 text-gray-800">{group.icon}</div>
-              <div className="font-semibold text-lg mb-1 text-gray-900">{group.title}</div>
-              <div className="text-gray-600 text-sm text-center mb-2">
-                {group.description}
-              </div>
-              <button
-                className="btn-secondary mt-auto"
-                onClick={() => navigate(`/tips?group=${group.label}`)}
-              >
-                Advice
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="section-title text-center mb-6">Heatwave Map</h2>
-        <div className="card text-gray-400 text-lg h-64 flex items-center justify-center bg-white shadow">
-          Interactive Heatwave Map will be displayed here
-        </div>
-      </section>
-
-      <section>
-        <h2 className="section-title text-center mb-6">Educational Resources</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {resources.map((resource, index) => (
-            <div
-              key={index}
-              className="card flex flex-col items-center text-center bg-white shadow p-6"
-            >
-              <div className="text-2xl mb-2 text-gray-800">{resource.icon}</div>
-              <div className="font-semibold text-lg mb-1 text-gray-900">{resource.title}</div>
-              <div className="text-gray-600 text-sm text-center mb-2">
-                {resource.description}
-              </div>
-              <button
-                className="btn-secondary mt-auto"
-                onClick={() => {
-                  if (resource.label === "What is a Heatwave?") navigate("/resources");
-                  else if (resource.label === "Prevention") navigate("/tips");
-                }}
-              >
-                {resource.buttonText}
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="section-title text-center mb-6">Latest Advisories</h2>
-        {loading ? (
-          <div className="text-center text-gray-500">Loading advisories...</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {advisories.map((adv: Advisory) => (
-              <AdvisoryCard key={adv.id} advisoryId={adv.id} />
-            ))}
-          </div>
-        )}
-        <div className="text-right mt-4">
-          <Link
-            to="/advisories"
-            className="link-primary inline-flex items-center gap-2 text-lg"
-          >
-            View All Advisories <span>→</span>
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
+	// Static content matching the wireframe (no sidebar)
+	return (
+		<div className="max-w-6xl mx-auto px-4 py-8">
+			<h1 className="text-3xl md:text-4xl font-bold text-center mb-10">
+				Current Heatwave Status
+			</h1>
+			{/* Status Cards */}
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+				<div className="bg-white rounded-xl border border-gray-100 shadow p-8 flex flex-col items-start">
+					<div className="flex items-center mb-3">
+						<div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+							i
+						</div>
+						<span className="text-gray-600 text-sm font-medium">
+							Heat Level
+						</span>
+					</div>
+					<div className="text-xl font-semibold text-gray-900 mb-1">
+						Extreme
+					</div>
+					<div className="text-gray-500 text-sm mb-4 whitespace-pre-line">
+						Temperature: 41°C
+						<br />
+						Feels like: 44°C
+					</div>
+					<button className="btn-primary text-sm"
+						onClick={() => navigateTo('/resources?section=heat-level')}
+					>
+						Learn More
+					</button>
+				</div>
+				<div className="bg-white rounded-xl border border-gray-100 shadow p-8 flex flex-col items-start">
+					<div className="flex items-center mb-3">
+						<div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+							⚠
+						</div>
+						<span className="text-gray-600 text-sm font-medium">
+							Advisory
+						</span>
+					</div>
+					<div className="text-xl font-semibold text-gray-900 mb-1">
+						Stay Indoors
+					</div>
+					<div className="text-gray-500 text-sm mb-4">
+						High risk of heatstroke. Limit outdoor activity.
+					</div>
+					<button className="btn-primary text-sm"
+						onClick={() => navigateTo('/advisories')}
+					>
+						View Details
+					</button>
+				</div>
+				<div className="bg-white rounded-xl border border-gray-100 shadow p-8 flex flex-col items-start">
+					<div className="flex items-center mb-3">
+						<div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+							🔔
+						</div>
+						<span className="text-gray-600 text-sm font-medium">Alerts</span>
+					</div>
+					<div className="text-xl font-semibold text-gray-900 mb-1">
+						2 New Alerts
+					</div>
+					<div className="text-gray-500 text-sm mb-4">
+						Urgent health advisories issued for your area.
+					</div>
+					<button className="btn-primary text-sm"
+						onClick={() => navigateTo('/advisories')}
+					>
+						See Alerts
+					</button>
+				</div>
+			</div>
+			{/* Vulnerable Groups */}
+			<section>
+				<h2 className="text-2xl font-semibold mb-6 text-center">
+					Vulnerable Groups
+				</h2>
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+					{VULNERABLE_GROUPS.map((group) => (
+						<div
+							key={group.label}
+							className="bg-white rounded-xl border border-gray-100 shadow p-8 flex flex-col items-start"
+						>
+							<div className="flex items-center mb-3">
+								<div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+									{group.icon}
+								</div>
+								<span className="text-gray-600 text-sm font-medium">
+									{group.label}
+								</span>
+							</div>
+							<div className="text-lg font-semibold text-gray-900 mb-1">
+								{group.label === "Children"
+									? "Hydration First"
+									: group.label === "Elderly"
+									? "Stay Cool"
+									: "Take Breaks"}
+							</div>
+							<div className="text-gray-500 text-sm mb-4">
+								{group.getAdvice(selectedRegion)}
+							</div>
+							<button className="btn-primary text-xs"
+								onClick={() => navigateTo(`/tips?group=${group.label.toLowerCase()}`)}
+							>
+								Advice
+							</button>
+						</div>
+					))}
+				</div>
+			</section>
+			{/* Heatwave Map & Alerts */}
+			<section>
+				<div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+					<h2 className="text-2xl font-semibold text-center md:text-left mb-0">
+						Heatwave Map
+					</h2>
+					<div className="flex flex-col md:flex-row md:items-center gap-2">
+						<div className="bg-red-50 border border-red-200 rounded px-4 py-2 text-red-800 text-sm font-medium flex items-center gap-2 mb-2 md:mb-0">
+							<span className="text-lg">⚠️</span>
+							<span>
+								Extreme Heat Advisory: Stay indoors 11am–4pm. Hydrate
+								frequently.
+							</span>
+						</div>
+						<button
+							className="btn-primary text-sm"
+							onClick={() => {
+								const csv = `Region,Status\n${selectedRegion},Extreme Heat`;
+								const blob = new Blob([csv], { type: "text/csv" });
+								const url = URL.createObjectURL(blob);
+								const a = document.createElement("a");
+								a.href = url;
+								a.download = `heatwave-status-${selectedRegion}.csv`;
+								a.click();
+								URL.revokeObjectURL(url);
+							}}
+						>
+							Download Data
+						</button>
+						<button
+							className="btn-secondary text-sm"
+							onClick={() => {
+								navigator.clipboard.writeText(
+									window.location.href + `?region=${selectedRegion}`
+								);
+								alert("Dashboard link copied to clipboard!");
+							}}
+						>
+							Share
+						</button>
+					</div>
+				</div>
+				<HeatwaveMap onRegionChange={setSelectedRegion} />
+			</section>
+			{/* Educational Resources */}
+			<section>
+				<h2 className="text-2xl font-semibold mb-6 text-center">
+					Educational Resources
+				</h2>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+					<div className="bg-white rounded-xl border border-gray-100 shadow p-8 flex flex-col items-start">
+						<div className="flex items-center mb-3">
+							<div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+								?
+							</div>
+							<span className="text-blue-600 text-sm font-medium">
+								What is a Heatwave?
+							</span>
+						</div>
+						<div className="text-lg font-semibold text-gray-900 mb-1">
+							Understanding Risks
+						</div>
+						<div className="text-gray-500 text-sm mb-4">
+							Learn how heatwaves impact health and safety.
+						</div>
+						<button className="btn-primary text-sm"
+							onClick={() => navigateTo('/resources/heatwave')}
+						>
+							Read More
+						</button>
+					</div>
+					<div className="bg-white rounded-xl border border-gray-100 shadow p-8 flex flex-col items-start">
+						<div className="flex items-center mb-3">
+							<div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+								🛡️
+							</div>
+							<span className="text-blue-600 text-sm font-medium">
+								Prevention
+							</span>
+						</div>
+						<div className="text-lg font-semibold text-gray-900 mb-1">
+							Stay Safe Tips
+						</div>
+						<div className="text-gray-500 text-sm mb-4">
+							Simple steps to reduce heat-related risks.
+						</div>
+						<button className="btn-primary text-sm"
+							onClick={() => navigateTo('/tips')}
+						>
+							View Tips
+						</button>
+					</div>
+				</div>
+			</section>
+			{/* Footer */}
+			<footer className="mt-12 pt-8 border-t border-gray-200 flex items-center">
+				<div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+					AM
+				</div>
+				<div>
+					<div className="font-semibold text-gray-900">Alex Morgan</div>
+					<div className="text-gray-600 text-sm">Health Advisor</div>
+				</div>
+			</footer>
+		</div>
+	);
 };
 
 export default DashboardPage;

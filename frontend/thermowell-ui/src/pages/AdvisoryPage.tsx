@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { AdvisoryService } from '../services/AdvisoryService';
-import type { GroupAdvisory, UrgentAlert } from '../services/AdvisoryService';
-import { Link } from 'react-router-dom';
+import type { UrgentAlert } from '../services/AdvisoryService';
 
 const AdvisoryPage: React.FC = () => {
-  const [selectedGroup, setSelectedGroup] = useState('All');
-  const [groupAdvisories, setGroupAdvisories] = useState<GroupAdvisory[]>([]);
   const [urgentAlerts, setUrgentAlerts] = useState<UrgentAlert[]>([]);
 
   useEffect(() => {
-    AdvisoryService.fetchGroupAdvisories().then((data: GroupAdvisory[]) => setGroupAdvisories(data));
     AdvisoryService.fetchUrgentAlerts().then((data: UrgentAlert[]) => setUrgentAlerts(data));
   }, []);
 
@@ -21,8 +17,6 @@ const AdvisoryPage: React.FC = () => {
     validUntil: 'Advisory valid until 8:00 PM. Updates will be provided as conditions change.'
   };
 
-  const groups = ['All', 'Children', 'Elderly', 'Outdoor Workers'];
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Hero Section */}
@@ -31,81 +25,40 @@ const AdvisoryPage: React.FC = () => {
         <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
           Stay updated with the latest heatwave advisories and safety measures.
         </p>
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <Link to="/tips" className="btn-primary text-lg font-semibold">View Tips</Link>
-          <Link to="/resources" className="btn-secondary text-lg font-semibold">Explore Resources</Link>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">Current Advisory</h2>
+        <div className="card bg-white shadow p-6">
+          <div className="text-secondary text-sm font-semibold mb-1">{currentAdvisory.type}</div>
+          <div className="subheading mb-1">{currentAdvisory.title}</div>
+          <div className="text-gray-600 mb-2">{currentAdvisory.description}</div>
         </div>
       </section>
 
-      <h1 className="heading mb-10">Active Advisories</h1>
-
-      {/* Current Advisory */}
-      <div className="card bg-white shadow p-6 mb-12">
-        <div className="text-secondary text-sm font-semibold mb-1">{currentAdvisory.type}</div>
-        <div className="subheading mb-1">{currentAdvisory.title}</div>
-        <div className="text-gray-600 mb-2">{currentAdvisory.description}</div>
-      </div>
-
       {/* Urgent Alerts */}
       <section className="mb-12">
-        <h2 className="subheading mb-4">Urgent Alerts</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">Urgent Alerts</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {urgentAlerts.map((alert, index) => (
-            <div key={index} className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 flex flex-col gap-1 shadow">
-              <div className="font-semibold text-red-700">
-                {alert.risk}
-              </div>
-              <div className="text-sm text-red-600">
-                {alert.action}
-              </div>
-              <div className="text-xs text-gray-500">
-                Issued: {alert.time}
-              </div>
-              <div className="text-xs text-red-500 font-semibold">
-                Status: {alert.status}
-              </div>
+            <div key={index} className="card bg-white shadow p-6">
+              <div className="text-secondary text-sm font-semibold mb-1">{alert.risk}</div>
+              <div className="text-gray-600 mb-2">{alert.action}</div>
+              <div className="text-xs text-gray-500">Issued: {alert.time}</div>
             </div>
           ))}
         </div>
       </section>
-
-      {/* Advisories by Group */}
-      <section>
-        <h2 className="subheading mb-4">Advisories by Group</h2>
-        {/* Improved tab selection colors and alignments */}
-        <div className="flex gap-4 mb-6">
-          {groups.map((group) => (
-            <button
-              key={group}
-              onClick={() => setSelectedGroup(group)}
-              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-150 ${
-                selectedGroup === group
-                  ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-blue-500'
-                  : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
-              }`}
-            >
-              {group}
-            </button>
-          ))}
+      {/* Footer */}
+      <footer className="mt-12 pt-8 border-t border-gray-200 flex items-center">
+        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+          AM
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {groupAdvisories
-            .filter(advisory => selectedGroup === 'All' || advisory.group === selectedGroup)
-            .map((advisory, index) => (
-              <div key={index} className="card">
-                <div className="subheading mb-1">
-                  {advisory.title}
-                </div>
-                <div className="text-primary">
-                  {advisory.description}
-                </div>
-                <div className="text-xs text-gray-400">
-                  Group: {advisory.group}
-                </div>
-              </div>
-            ))}
+        <div>
+          <div className="font-semibold text-gray-900">Alex Morgan</div>
+          <div className="text-gray-600 text-sm">Health Advisor</div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 };

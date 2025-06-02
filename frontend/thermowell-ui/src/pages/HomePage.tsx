@@ -9,7 +9,7 @@ import type { Advisory } from '../data/mockAdvisories';
 const HomePage: React.FC = () => {
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [advisories, setAdvisories] = useState<Advisory[]>([]);
-  const showOnboarding = !localStorage.getItem('onboardingComplete');
+  const [showOnboarding, setShowOnboarding] = useState(!localStorage.getItem('onboardingComplete'));
 
   useEffect(() => {
     UserService.fetchUser().then((data) => setUser(data));
@@ -18,6 +18,7 @@ const HomePage: React.FC = () => {
 
   const handleCloseOnboarding = () => {
     localStorage.setItem('onboardingComplete', 'true');
+    setShowOnboarding(false);
   };
 
   const latestAdvisories = advisories.slice(0, 3);
@@ -29,35 +30,28 @@ const HomePage: React.FC = () => {
 
       {/* Hero Section */}
       <section className="rounded-2xl shadow-lg bg-white text-gray-800 text-center p-10 mb-12">
-        <h1 className="text-5xl font-bold mb-4">Stay Safe During Heatwaves</h1>
+        <h1 className="text-5xl font-bold mb-4">ThermoWell: Your Heatwave Companion</h1>
         <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
-          Get real-time advisories, health tips, and personalized risk assessments during extreme heat.
+          Stay safe and informed during heatwaves with real-time advisories, actionable tips, and essential resources.
         </p>
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <Link to="/advisories" className="btn-primary text-lg font-semibold">View Advisories</Link>
-          <Link to="/health-score" className="btn-secondary text-lg font-semibold">Check Health Score</Link>
-        </div>
       </section>
 
       {/* Feature Highlights */}
-      <section className="mb-12">
-        <h2 className="text-3xl font-semibold mb-6">Key Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-            <div className="text-3xl mb-2">🌡️</div>
-            <div className="text-xl font-semibold mb-1">Real-Time Alerts</div>
-            <div className="text-base text-gray-600 text-center">Stay informed with up-to-date heatwave advisories in your area.</div>
-          </div>
-          <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-            <div className="text-3xl mb-2">🧮</div>
-            <div className="text-xl font-semibold mb-1">Health Risk Calculator</div>
-            <div className="text-base text-gray-600 text-center">Quickly assess how vulnerable you are based on age and medical history.</div>
-          </div>
-          <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-            <div className="text-3xl mb-2">📘</div>
-            <div className="text-xl font-semibold mb-1">Practical Tips</div>
-            <div className="text-base text-gray-600 text-center">Simple, actionable safety measures for you and your family.</div>
-          </div>
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
+          <h2 className="text-xl font-semibold mb-2">Advisories</h2>
+          <p className="text-gray-600 text-center mb-4">Get real-time updates on heatwave conditions and safety measures.</p>
+          <Link to="/advisories" className="btn-primary text-lg font-semibold">View Advisories</Link>
+        </div>
+        <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
+          <h2 className="text-xl font-semibold mb-2">Safety Tips</h2>
+          <p className="text-gray-600 text-center mb-4">Discover actionable tips to protect yourself and your loved ones.</p>
+          <Link to="/tips" className="btn-primary text-lg font-semibold">View Tips</Link>
+        </div>
+        <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
+          <h2 className="text-xl font-semibold mb-2">Resources</h2>
+          <p className="text-gray-600 text-center mb-4">Access guides, checklists, and external links for heatwave preparedness.</p>
+          <Link to="/resources" className="btn-primary text-lg font-semibold">View Resources</Link>
         </div>
       </section>
 
@@ -75,6 +69,16 @@ const HomePage: React.FC = () => {
           </Link>
         </div>
       </section>
+      {/* Footer */}
+      <footer className="mt-12 pt-8 border-t border-gray-200 flex items-center">
+        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+          AM
+        </div>
+        <div>
+          <div className="font-semibold text-gray-900">Alex Morgan</div>
+          <div className="text-gray-600 text-sm">Health Advisor</div>
+        </div>
+      </footer>
     </div>
   );
 };
