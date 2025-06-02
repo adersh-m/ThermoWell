@@ -9,6 +9,7 @@ ThermoWell is a heatwave safety and monitoring application designed to protect u
 - [Authentication Architecture](#authentication-architecture)
 - [Settings Architecture](#settings-architecture)
 - [UI Standardization](#ui-standardization)
+- [Visual Design](#visual-design)
 - [User Journey Documentation](#user-journey-documentation)
 - [Additional Documentation](#additional-documentation)
 - [Deployment](#deployment)
@@ -225,6 +226,43 @@ All buttons across ThermoWell follow consistent design patterns and color scheme
 - Active state highlighting
 - Mobile responsive design
 - React Router integration
+
+## Visual Design
+
+The visual design of ThermoWell is centered around clarity, accessibility, and user engagement. Key elements include:
+
+- **Color Palette**: A consistent and limited color palette to enhance recognition and reduce cognitive load.
+- **Typography**: Clear and legible fonts, with a hierarchy that guides the user through the content.
+- **Iconography**: Intuitive icons that support text labels and enhance understanding.
+- **Spacing and Layout**: Generous spacing and a grid-based layout that adapts to different screen sizes.
+- **Data Visualizations**: Intuitive and interactive visualizations for heat data and weather information.
+
+### Design Tokens
+
+Design tokens are used to maintain consistency in design across the application. They include:
+
+- **Color Tokens**: Named colors for primary, secondary, and background colors, as well as semantic colors for heat levels.
+- **Spacing Tokens**: Standardized spacing units for margins and paddings.
+- **Typography Tokens**: Font sizes, weights, and line heights for consistent text styling.
+
+### Dashboard Visualizations
+
+The dashboard features specialized visualizations to help users understand heat-related data:
+
+- **Temperature Gauge**: Visual representation of current and "feels like" temperatures using color-coded scales.
+- **Heat Index Visualizer**: Translates heat index values into risk levels with corresponding recommendations.
+- **Interactive Map**: Geographic visualization of heat conditions across regions with color-coded overlays.
+
+For more details, see the [Dashboard Visualizations documentation](./DASHBOARD_VISUALIZATIONS.md).
+
+### Accessibility Considerations
+
+The design adheres to accessibility standards to ensure it is usable by people with a wide range of abilities. This includes:
+
+- Sufficient color contrast between text and background
+- Text alternatives for non-text content
+- Keyboard navigability and focus management
+- Consistent and predictable navigation
 
 ## User Journey Documentation
 

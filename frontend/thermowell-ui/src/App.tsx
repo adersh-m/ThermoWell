@@ -1,6 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
-import './index.css';
 import Layout from './components/Layout';
 import PublicLayout from './components/PublicLayout';
 import { AuthProvider } from './contexts/AuthContext';

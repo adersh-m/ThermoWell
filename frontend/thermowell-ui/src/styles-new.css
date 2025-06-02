@@ -1,0 +1,40 @@
+/* ThermoWell main styles */
+
+/* Import only essential custom styles */
+@import './styles/colors.css';
+
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utility classes that Tailwind doesn't provide */
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Essential animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Hero section background */
+.bg-hero-pattern {
+  background-image: linear-gradient(to right, #ff5a34, #ff7452);
+}
