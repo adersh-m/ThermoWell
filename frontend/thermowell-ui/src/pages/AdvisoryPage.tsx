@@ -4,61 +4,103 @@ import type { UrgentAlert } from '../services/AdvisoryService';
 
 const AdvisoryPage: React.FC = () => {
   const [urgentAlerts, setUrgentAlerts] = useState<UrgentAlert[]>([]);
+  const [currentAdvisory, setCurrentAdvisory] = useState<{
+    type: string;
+    title: string;
+    description: string;
+    time: string;
+    validUntil: string;
+  } | null>(null);
 
   useEffect(() => {
     AdvisoryService.fetchUrgentAlerts().then((data: UrgentAlert[]) => setUrgentAlerts(data));
+    AdvisoryService.fetchCurrentAdvisory().then((data) => setCurrentAdvisory(data));
   }, []);
-
-  const currentAdvisory = {
-    type: 'Current Advisory',
-    title: 'Extreme Heat Warning',
-    description: 'Temperatures above 40°C. High risk for heatstroke. Stay indoors and hydrate.',
-    time: 'Today, 10:00 AM',
-    validUntil: 'Advisory valid until 8:00 PM. Updates will be provided as conditions change.'
-  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Hero Section */}
-      <section className="rounded-2xl shadow-lg bg-white text-gray-800 text-center p-10 mb-12">
-        <h1 className="text-5xl font-bold mb-4">Advisories</h1>
-        <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
-          Stay updated with the latest heatwave advisories and safety measures.
-        </p>
-      </section>
+      <h2 className="text-2xl font-bold mb-6">Health Advisories</h2>
 
-      <section className="mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">Current Advisory</h2>
-        <div className="card bg-white shadow p-6">
-          <div className="text-secondary text-sm font-semibold mb-1">{currentAdvisory.type}</div>
-          <div className="subheading mb-1">{currentAdvisory.title}</div>
-          <div className="text-gray-600 mb-2">{currentAdvisory.description}</div>
-        </div>
-      </section>
+      {/* Current Advisory */}
+      <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+        <h3 className="text-xl font-semibold mb-4">Current Advisory</h3>
+        {currentAdvisory ? (
+          <div className="border-l-4 border-orange-500 pl-4">
+            <div className="flex items-center space-x-2 mb-2">
+              <span className="text-orange-500 text-xl">⚠️</span>
+              <span className="text-orange-600 text-sm font-semibold uppercase">{currentAdvisory.type}</span>
+            </div>
+            <h4 className="font-medium text-lg mb-2">{currentAdvisory.title}</h4>
+            <p className="text-gray-600 mb-2">{currentAdvisory.description}</p>
+            <div className="text-sm text-gray-500">
+              Valid until: {new Date(currentAdvisory.validUntil).toLocaleDateString()}
+            </div>
+          </div>
+        ) : (
+          <div className="text-gray-500">Loading current advisory...</div>
+        )}
+      </div>
 
       {/* Urgent Alerts */}
-      <section className="mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">Urgent Alerts</h2>
+      <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+        <h3 className="text-xl font-semibold mb-4">Urgent Alerts</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {urgentAlerts.map((alert, index) => (
-            <div key={index} className="card bg-white shadow p-6">
-              <div className="text-secondary text-sm font-semibold mb-1">{alert.risk}</div>
-              <div className="text-gray-600 mb-2">{alert.action}</div>
-              <div className="text-xs text-gray-500">Issued: {alert.time}</div>
+            <div key={index} className="space-y-2">
+              <div className="flex items-start space-x-3">
+                <span className="text-red-500 text-xl">🚨</span>
+                <div>
+                  <h4 className="font-medium text-red-800">{alert.risk}</h4>
+                  <p className="text-gray-600 text-sm">{alert.action}</p>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Status: <span className="font-medium">{alert.status}</span> • {alert.time}
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
-      </section>
-      {/* Footer */}
-      <footer className="mt-12 pt-8 border-t border-gray-200 flex items-center">
-        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
-          AM
+      </div>
+
+      {/* Warning Signs */}
+      <div className="bg-white p-6 rounded-lg shadow-sm">
+        <h3 className="text-xl font-semibold mb-4">Warning Signs to Watch For</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <span className="text-red-500 text-xl">⚠️</span>
+              <div>
+                <h4 className="font-medium">Heat Exhaustion</h4>
+                <p className="text-gray-600 text-sm">Excessive sweating, weakness, dizziness</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <span className="text-red-500 text-xl">⚠️</span>
+              <div>
+                <h4 className="font-medium">Heat Cramps</h4>
+                <p className="text-gray-600 text-sm">Muscle pain or spasms</p>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <span className="text-red-500 text-xl">⚠️</span>
+              <div>
+                <h4 className="font-medium">Heat Stroke</h4>
+                <p className="text-gray-600 text-sm">High body temperature, confusion</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <span className="text-red-500 text-xl">⚠️</span>
+              <div>
+                <h4 className="font-medium">Dehydration</h4>
+                <p className="text-gray-600 text-sm">Extreme thirst, dry mouth</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <div className="font-semibold text-gray-900">Alex Morgan</div>
-          <div className="text-gray-600 text-sm">Health Advisor</div>
-        </div>
-      </footer>
+        <p className="text-sm text-gray-500 mt-4">Based on guidelines from health authorities</p>
+      </div>
     </div>
   );
 };

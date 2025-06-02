@@ -11,104 +11,123 @@ export interface Notification {
   source: string;
 }
 
+// Validation function
+const isValidNotification = (item: any): item is Notification => {
+  const validTypes = ['heatwave', 'health', 'emergency', 'system', 'reminder'];
+  const validSeverities = ['low', 'medium', 'high', 'critical'];
+  
+  return item && 
+    typeof item.id === 'string' && 
+    validTypes.includes(item.type) && 
+    validSeverities.includes(item.severity) && 
+    typeof item.title === 'string' && 
+    typeof item.message === 'string' && 
+    typeof item.timestamp === 'string' && 
+    typeof item.isRead === 'boolean' && 
+    typeof item.source === 'string' && 
+    (item.location === undefined || typeof item.location === 'string') && 
+    (item.actionRequired === undefined || typeof item.actionRequired === 'boolean');
+};
+
 class NotificationService {
-  private notifications: Notification[] = [
-    {
-      id: '1',
-      type: 'heatwave',
-      severity: 'critical',
-      title: 'Extreme Heat Warning',
-      message: 'Temperatures expected to reach 115°F (46°C) in your area. Avoid outdoor activities between 10 AM - 6 PM.',
-      timestamp: '2025-06-02T14:30:00Z',
-      isRead: false,
-      location: 'Phoenix, AZ',
-      actionRequired: true,
-      source: 'National Weather Service'
-    },
-    {
-      id: '2',
-      type: 'health',
-      severity: 'medium',
-      title: 'Hydration Reminder',
-      message: 'You haven\'t logged water intake in 4 hours. Remember to stay hydrated during high temperatures.',
-      timestamp: '2025-06-02T13:15:00Z',
-      isRead: false,
-      location: 'Phoenix, AZ',
-      actionRequired: true,
-      source: 'ThermoWell Health Monitor'
-    },
-    {
-      id: '3',
-      type: 'emergency',
-      severity: 'high',
-      title: 'Cooling Center Alert',
-      message: 'Emergency cooling centers are now open in your area due to excessive heat conditions.',
-      timestamp: '2025-06-02T12:00:00Z',
-      isRead: true,
-      location: 'Phoenix, AZ',
-      actionRequired: false,
-      source: 'Emergency Management'
-    },
-    {
-      id: '4',
-      type: 'heatwave',
-      severity: 'high',
-      title: 'Heat Advisory Extended',
-      message: 'Heat advisory has been extended through Thursday. Heat index values up to 108°F expected.',
-      timestamp: '2025-06-02T10:45:00Z',
-      isRead: true,
-      location: 'Phoenix, AZ',
-      actionRequired: false,
-      source: 'National Weather Service'
-    },
-    {
-      id: '5',
-      type: 'system',
-      severity: 'low',
-      title: 'Weekly Safety Report',
-      message: 'Your weekly heatwave safety report is ready. You\'ve followed 85% of recommended safety measures.',
-      timestamp: '2025-06-01T09:00:00Z',
-      isRead: true,
-      location: '',
-      actionRequired: false,
-      source: 'ThermoWell Analytics'
-    },
-    {
-      id: '6',
-      type: 'reminder',
-      severity: 'medium',
-      title: 'Emergency Kit Check',
-      message: 'It\'s time to check your emergency kit. Ensure you have adequate water supplies and battery-powered fans.',
-      timestamp: '2025-05-31T16:00:00Z',
-      isRead: false,
-      location: '',
-      actionRequired: true,
-      source: 'ThermoWell Preparedness'
+  private notifications: Notification[] = [];
+  private initialized: boolean = false;
+  private readonly MAX_LISTENERS = 10;
+  private readonly FETCH_TIMEOUT = 10000;
+  private readonly MAX_RETRIES = 3;
+  private initPromise: Promise<void> | null = null;
+
+  // Initialize with data from JSON file
+  private async initializeNotifications(): Promise<void> {
+    if (this.initialized) return;
+    
+    // Prevent multiple simultaneous initialization
+    if (this.initPromise) {
+      return this.initPromise;
     }
-  ];
+    
+    this.initPromise = this.doInitialization();
+    return this.initPromise;
+  }
+
+  private async doInitialization(): Promise<void> {
+    try {
+      const response = await this.fetchWithRetry('/data/notifications.json');
+      const data = await response.json();
+      
+      if (!Array.isArray(data)) {
+        throw new Error('Notifications data is not an array');
+      }
+
+      const validNotifications = data.filter(isValidNotification);
+      
+      if (validNotifications.length !== data.length) {
+        console.warn(`Filtered out ${data.length - validNotifications.length} invalid notification items`);
+      }
+
+      this.notifications = validNotifications;
+      this.initialized = true;
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+      this.notifications = [];
+      this.initialized = true;
+    } finally {
+      this.initPromise = null;
+    }
+  }
+
+  private async fetchWithRetry(url: string, retries = 0): Promise<Response> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.FETCH_TIMEOUT);
+
+    try {
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      
+      if (retries < this.MAX_RETRIES && error instanceof Error) {
+        console.warn(`Fetch failed for ${url}, retrying... (${retries + 1}/${this.MAX_RETRIES})`);
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 1000));
+        return this.fetchWithRetry(url, retries + 1);
+      }
+      
+      throw error;
+    }
+  }
 
   // Listeners for real-time updates
   private listeners: ((notifications: Notification[]) => void)[] = [];
 
   // Get all notifications
-  getAllNotifications(): Notification[] {
+  async getAllNotifications(): Promise<Notification[]> {
+    await this.initializeNotifications();
     return [...this.notifications];
   }
 
   // Get unread notifications only
-  getUnreadNotifications(): Notification[] {
+  async getUnreadNotifications(): Promise<Notification[]> {
+    await this.initializeNotifications();
     return this.notifications.filter(n => !n.isRead);
   }
 
   // Get recent notifications (for TopBar popup)
-  getRecentNotifications(limit: number = 5): Notification[] {
+  async getRecentNotifications(limit: number = 5): Promise<Notification[]> {
+    await this.initializeNotifications();
     return this.notifications
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, limit);
   }
 
   // Mark notification as read
-  markAsRead(id: string): void {
+  async markAsRead(id: string): Promise<void> {
+    await this.initializeNotifications();
     const notification = this.notifications.find(n => n.id === id);
     if (notification) {
       notification.isRead = true;
@@ -117,45 +136,110 @@ class NotificationService {
   }
 
   // Mark all notifications as read
-  markAllAsRead(): void {
+  async markAllAsRead(): Promise<void> {
+    await this.initializeNotifications();
     this.notifications.forEach(n => n.isRead = true);
     this.notifyListeners();
   }
 
   // Delete notification
-  deleteNotification(id: string): void {
+  async deleteNotification(id: string): Promise<void> {
+    await this.initializeNotifications();
     this.notifications = this.notifications.filter(n => n.id !== id);
     this.notifyListeners();
   }
 
-  // Add new notification
-  addNotification(notification: Omit<Notification, 'id'>): void {
-    const newNotification: Notification = {
-      ...notification,
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
-    };
-    this.notifications.unshift(newNotification);
-    this.notifyListeners();
-  }
+  // Add new notification (implemented below with validation)
 
   // Get unread count
-  getUnreadCount(): number {
+  async getUnreadCount(): Promise<number> {
+    await this.initializeNotifications();
     return this.notifications.filter(n => !n.isRead).length;
   }
 
   // Subscribe to notification updates
   subscribe(listener: (notifications: Notification[]) => void): () => void {
+    // Prevent memory leaks by limiting number of listeners
+    if (this.listeners.length >= this.MAX_LISTENERS) {
+      console.warn('Maximum number of notification listeners reached. Removing oldest listener.');
+      this.listeners.shift();
+    }
+
     this.listeners.push(listener);
     
     // Return unsubscribe function
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
+      const index = this.listeners.indexOf(listener);
+      if (index > -1) {
+        this.listeners.splice(index, 1);
+      }
     };
   }
 
   // Notify all listeners of changes
   private notifyListeners(): void {
-    this.listeners.forEach(listener => listener([...this.notifications]));
+    // Create a copy to prevent issues if listeners array is modified during iteration
+    const listenersCopy = [...this.listeners];
+    listenersCopy.forEach(listener => {
+      try {
+        listener([...this.notifications]);
+      } catch (error) {
+        console.error('Error in notification listener:', error);
+      }
+    });
+  }
+
+  // Add new notification with validation
+  addNotification(notification: Omit<Notification, 'id'>): void {
+    try {
+      const newNotification: Notification = {
+        ...notification,
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+      };
+
+      // Validate the new notification
+      if (!isValidNotification(newNotification)) {
+        console.error('Invalid notification data:', newNotification);
+        return;
+      }
+
+      this.notifications.unshift(newNotification);
+      
+      // Limit the number of notifications to prevent memory issues
+      const MAX_NOTIFICATIONS = 1000;
+      if (this.notifications.length > MAX_NOTIFICATIONS) {
+        this.notifications = this.notifications.slice(0, MAX_NOTIFICATIONS);
+      }
+
+      this.notifyListeners();
+    } catch (error) {
+      console.error('Error adding notification:', error);
+    }
+  }
+
+  // Clear all listeners (useful for cleanup)
+  clearAllListeners(): void {
+    this.listeners = [];
+  }
+
+  // Get notification statistics
+  getNotificationStats(): { total: number; unread: number; byType: Record<string, number>; bySeverity: Record<string, number> } {
+    const byType: Record<string, number> = {};
+    const bySeverity: Record<string, number> = {};
+    let unread = 0;
+
+    this.notifications.forEach(notification => {
+      if (!notification.isRead) unread++;
+      byType[notification.type] = (byType[notification.type] || 0) + 1;
+      bySeverity[notification.severity] = (bySeverity[notification.severity] || 0) + 1;
+    });
+
+    return {
+      total: this.notifications.length,
+      unread,
+      byType,
+      bySeverity
+    };
   }
 
   // Format timestamp for display

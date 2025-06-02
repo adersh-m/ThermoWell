@@ -5,20 +5,25 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
 
   const navItems = [
-    { icon: '📊', label: 'Dashboard', path: '/dashboard' },
-    { icon: '⚠️', label: 'Advisories', path: '/advisories' },
-    { icon: '🔔', label: 'Alerts', path: '/alerts' },
-    { icon: '🌡️', label: 'Health Score', path: '/health-score' },
-    { icon: '📍', label: 'Tips', path: '/tips' },
-    { icon: '📚', label: 'Resources', path: '/resources' }
+    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Advisories', path: '/advisories' },
+    { label: 'Alerts', path: '/alerts' },
+    { label: 'Health Score', path: '/health-score' },
+    { label: 'Tips', path: '/tips' },
+    { label: 'Resources', path: '/resources' }
   ];
 
   const supportItems = [
-    { icon: '❓', label: 'Help', path: '/help' },
-    { icon: '⚙️', label: 'Settings', path: '/settings' }
+    { label: 'Help', path: '/help' },
+    { label: 'Settings', path: '/settings' }
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === '/settings') {
+      return location.pathname.startsWith('/settings');
+    }
+    return location.pathname === path;
+  };
 
   return (
     <nav className="w-60 bg-white border-r border-gray-200 py-5 flex flex-col min-h-screen">
@@ -34,7 +39,6 @@ const Sidebar: React.FC = () => {
                 : 'text-gray-600 hover:bg-gray-50 hover:text-blue-700'
             }`}
           >
-            <span className="w-4 h-4 mr-3 opacity-70">{item.icon}</span>
             {item.label}
           </Link>
         ))}
@@ -49,7 +53,6 @@ const Sidebar: React.FC = () => {
                 : 'text-gray-600 hover:bg-gray-50 hover:text-blue-700'
             }`}
           >
-            <span className="w-4 h-4 mr-3 opacity-70">{item.icon}</span>
             {item.label}
           </Link>
         ))}

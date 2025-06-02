@@ -1,68 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import HelpService from '../services/HelpService';
+import type { FAQ, ContactMethod } from '../services/HelpService';
 
 const HelpPage: React.FC = () => {
-  const [expandedFaq, setExpandedFaq] = React.useState<number | null>(null);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const faqs = [
-    {
-      question: 'What is a heatwave?',
-      answer: 'A heatwave is a period of abnormally hot weather generally lasting more than two days. Heat waves can occur with or without high humidity, and have the potential to cover a large area, exposing a high number of people to hazardous heat.'
-    },
-    {
-      question: 'How do I read the heat index?',
-      answer: 'The heat index is what the temperature feels like to the human body when relative humidity is combined with the air temperature. When the body gets too hot, it cools itself by sweating. If the humidity is high, this cooling is reduced, causing the body to feel warmer.'
-    },
-    {
-      question: 'Who is most at risk during a heatwave?',
-      answer: 'Those most vulnerable include the elderly, infants and young children, pregnant women, people with chronic medical conditions, and outdoor workers. People without access to air conditioning are also at increased risk.'
-    },
-    {
-      question: 'How can I prepare for extreme heat?',
-      answer: 'Stay hydrated, wear lightweight clothing, use air conditioning or fans, limit outdoor activities during peak heat, check on vulnerable neighbors and relatives, never leave children or pets in vehicles, and stay updated on local heat advisories.'
-    },
-    {
-      question: 'What is the difference between a heat advisory and excessive heat warning?',
-      answer: 'A heat advisory is issued when conditions are expected to cause significant discomfort but may not be life-threatening if precautions are taken. An excessive heat warning is issued when the heat index values are dangerous for the entire population.'
-    }
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [faqsData, contactData] = await Promise.all([
+          HelpService.fetchFAQs(),
+          HelpService.fetchContactMethods()
+        ]);
+        setFaqs(faqsData);
+        setContactMethods(contactData);
+      } catch (error) {
+        console.error('Error fetching help data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const contactMethods = [
-    {
-      method: 'Email Support',
-      details: 'help@heatwavehealth.org',
-      icon: '✉️'
-    },
-    {
-      method: 'Emergency Hotline',
-      details: '+1 800-123-4567',
-      icon: '📞'
-    },
-    {
-      method: 'Live Chat',
-      details: 'Available 24/7',
-      icon: '💬'
-    }
-  ];
+    fetchData();
+  }, []);
 
   const toggleFaq = (index: number) => {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
 
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto px-6 py-10">
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="mt-2 text-gray-600">Loading help content...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
-      {/* Hero Section */}
-      <section className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Help & FAQs</h1>
-        <p className="text-lg text-gray-600">
-          Find answers to common questions and learn how to stay safe during heatwaves.
-        </p>
-      </section>
+      <h2 className="text-2xl font-bold mb-6">Help & FAQs</h2>
+      
       {/* FAQ Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-6">Frequently Asked Questions</h2>
+        <h3 className="text-xl font-semibold mb-6">Frequently Asked Questions</h3>
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg p-4 bg-white">
+            <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <button
                 className="w-full text-left flex justify-between items-center text-lg font-medium text-gray-800 hover:text-blue-600 transition-colors"
                 onClick={() => toggleFaq(index)}
@@ -79,10 +69,10 @@ const HelpPage: React.FC = () => {
       </section>
       {/* Contact Methods */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6">Contact Us</h2>
+        <h3 className="text-xl font-semibold mb-6">Contact Us</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {contactMethods.map((method, index) => (
-            <div key={index} className="border rounded-lg p-4 flex items-center gap-4">
+            <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex items-center gap-4">
               <div className="text-3xl bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center">
                 {method.icon}
               </div>

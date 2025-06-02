@@ -1,0 +1,22 @@
+[
+  {
+    "question": "What is a heatwave?",
+    "answer": "A heatwave is a period of abnormally hot weather generally lasting more than two days. Heat waves can occur with or without high humidity, and have the potential to cover a large area, exposing a high number of people to hazardous heat."
+  },
+  {
+    "question": "How do I read the heat index?",
+    "answer": "The heat index is what the temperature feels like to the human body when relative humidity is combined with the air temperature. When the body gets too hot, it cools itself by sweating. If the humidity is high, this cooling is reduced, causing the body to feel warmer."
+  },
+  {
+    "question": "Who is most at risk during a heatwave?",
+    "answer": "Those most vulnerable include the elderly, infants and young children, pregnant women, people with chronic medical conditions, and outdoor workers. People without access to air conditioning are also at increased risk."
+  },
+  {
+    "question": "How can I prepare for extreme heat?",
+    "answer": "Stay hydrated, wear lightweight clothing, use air conditioning or fans, limit outdoor activities during peak heat, check on vulnerable neighbors and relatives, never leave children or pets in vehicles, and stay updated on local heat advisories."
+  },
+  {
+    "question": "What is the difference between a heat advisory and excessive heat warning?",
+    "answer": "A heat advisory is issued when conditions are expected to cause significant discomfort but may not be life-threatening if precautions are taken. An excessive heat warning is issued when the heat index values are dangerous for the entire population."
+  }
+]

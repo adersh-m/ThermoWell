@@ -1,0 +1,14 @@
+[
+  {
+    "risk": "Heatstroke risk: High",
+    "action": "Limit outdoor activity",
+    "time": "09:45 AM",
+    "status": "Active"
+  },
+  {
+    "risk": "Medical advisory: Elderly",
+    "action": "Check on neighbors",
+    "time": "09:30 AM",
+    "status": "Active"
+  }
+]

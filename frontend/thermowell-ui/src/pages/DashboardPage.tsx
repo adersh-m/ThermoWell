@@ -1,35 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HeatwaveMap from "../components/HeatwaveMap";
-
-const VULNERABLE_GROUPS = [
-	{
-		icon: "👶",
-		label: "Children",
-		getAdvice: (region: string) =>
-			region === "Bangkok"
-				? "Encourage water breaks and avoid outdoor play during peak heat."
-				: "Encourage frequent water breaks and avoid midday sun.",
-	},
-	{
-		icon: "👴",
-		label: "Elderly",
-		getAdvice: (region: string) =>
-			region === "Singapore"
-				? "Check on elderly neighbors and use cooling centers if needed."
-				: "Use fans, stay in shaded areas, and check on neighbors.",
-	},
-	{
-		icon: "👷",
-		label: "Outdoor Workers",
-		getAdvice: (region: string) =>
-			region === "Jakarta"
-				? "Take breaks in cool areas and drink water every hour."
-				: "Rest in cool areas and wear light clothing.",
-	},
-];
+import { DashboardService } from "../services/DashboardService";
 
 const DashboardPage: React.FC = () => {
 	const [selectedRegion, setSelectedRegion] = useState("Manila");
+	const [vulnerableGroups, setVulnerableGroups] = useState<any[]>([]);
+
+	useEffect(() => {
+		const loadVulnerableGroups = async () => {
+			try {
+				const groups = await DashboardService.fetchVulnerableGroups();
+				setVulnerableGroups(groups);
+			} catch (error) {
+				console.error('Failed to load vulnerable groups:', error);
+				setVulnerableGroups([]);
+			}
+		};
+		
+		loadVulnerableGroups();
+	}, []);
 
 	// Helper for navigation
 	const navigateTo = (path: string) => {
@@ -114,7 +103,7 @@ const DashboardPage: React.FC = () => {
 					Vulnerable Groups
 				</h2>
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-					{VULNERABLE_GROUPS.map((group) => (
+					{vulnerableGroups.map((group) => (
 						<div
 							key={group.label}
 							className="bg-white rounded-xl border border-gray-100 shadow p-8 flex flex-col items-start"
@@ -128,11 +117,7 @@ const DashboardPage: React.FC = () => {
 								</span>
 							</div>
 							<div className="text-lg font-semibold text-gray-900 mb-1">
-								{group.label === "Children"
-									? "Hydration First"
-									: group.label === "Elderly"
-									? "Stay Cool"
-									: "Take Breaks"}
+								{group.title}
 							</div>
 							<div className="text-gray-500 text-sm mb-4">
 								{group.getAdvice(selectedRegion)}

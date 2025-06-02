@@ -1,20 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import TipsService from "../services/TipsService";
 
 const TipsPage: React.FC = () => {
-  const generalTips = [
-    {
-      category: "General",
-      title: "Stay Hydrated",
-      description:
-        "Drink water regularly, even if you're not thirsty. Avoid sugary and alcoholic drinks.",
-    },
-    {
-      category: "General",
-      title: "Keep Cool",
-      description:
-        "Wear light clothing and stay in air-conditioned places when possible.",
-    },
-  ];
+  const [generalTips, setGeneralTips] = useState<{ title: string; description: string; category?: string }[]>([]);
+
+  useEffect(() => {
+    TipsService.fetchTips().then((tips) => {
+      // Add category to each tip for consistency
+      const tipsWithCategory = tips.map(tip => ({ ...tip, category: "General" }));
+      setGeneralTips(tipsWithCategory);
+    });
+  }, []);
 
   // Helper for tip actions (future: save/favorite, read more)
   const handleTipAction = (tip: typeof generalTips[0]) => {
@@ -22,22 +18,21 @@ const TipsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <section className="rounded-2xl shadow-lg bg-white text-gray-800 text-center p-10 mb-12">
-        <h1 className="text-5xl font-bold mb-4">Safety Tips</h1>
-        <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
-          Discover actionable tips to stay safe and healthy during heatwaves.
-        </p>
-      </section>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <h2 className="text-2xl font-bold mb-6">Safety Tips</h2>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {generalTips.map((tip, index) => (
-          <div key={index} className="card bg-white shadow p-6 flex flex-col items-start">
-            <div className="subheading mb-1">{tip.title}</div>
-            <div className="text-gray-600 mb-4">{tip.description}</div>
-            <button className="btn-primary text-sm" onClick={() => handleTipAction(tip)}>Read More</button>
-          </div>
-        ))}
+        {generalTips.length === 0 ? (
+          <div className="col-span-full text-center text-gray-500 py-8">Loading tips...</div>
+        ) : (
+          generalTips.map((tip, index) => (
+            <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex flex-col">
+              <h3 className="text-xl font-semibold mb-3">{tip.title}</h3>
+              <div className="text-gray-600 mb-4 flex-grow">{tip.description}</div>
+              <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm mt-auto" onClick={() => handleTipAction(tip)}>Read More</button>
+            </div>
+          ))
+        )}
       </section>
     </div>
   );

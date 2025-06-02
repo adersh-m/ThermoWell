@@ -5,18 +5,28 @@ const AlertsPage: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [filter, setFilter] = useState<'all' | 'unread' | 'heatwave' | 'health' | 'emergency'>('all');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'priority'>('newest');
+  const [unreadCount, setUnreadCount] = useState<number>(0);
 
   // Load notifications from service
   useEffect(() => {
-    const updateNotifications = () => {
-      setNotifications(notificationService.getAllNotifications());
+    const updateNotifications = async () => {
+      try {
+        const allNotifications = await notificationService.getAllNotifications();
+        setNotifications(allNotifications);
+        const count = await notificationService.getUnreadCount();
+        setUnreadCount(count);
+      } catch (error) {
+        console.error('Failed to load notifications:', error);
+        setNotifications([]);
+        setUnreadCount(0);
+      }
     };
 
     // Initial load
     updateNotifications();
 
-    // Subscribe to changes
-    const unsubscribe = notificationService.subscribe(updateNotifications);
+    // Subscribe to changes (this will call updateNotifications when notifications change)
+    const unsubscribe = notificationService.subscribe(() => updateNotifications());
 
     return unsubscribe;
   }, []);
@@ -25,16 +35,33 @@ const AlertsPage: React.FC = () => {
   const getTypeIcon = notificationService.getTypeIcon;
   const formatTimestamp = notificationService.formatTimestamp;
 
-  const markAsRead = (id: string) => {
-    notificationService.markAsRead(id);
+  const markAsRead = async (id: string) => {
+    try {
+      await notificationService.markAsRead(id);
+      const count = await notificationService.getUnreadCount();
+      setUnreadCount(count);
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
   };
 
-  const markAllAsRead = () => {
-    notificationService.markAllAsRead();
+  const markAllAsRead = async () => {
+    try {
+      await notificationService.markAllAsRead();
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Failed to mark all notifications as read:', error);
+    }
   };
 
-  const deleteNotification = (id: string) => {
-    notificationService.deleteNotification(id);
+  const deleteNotification = async (id: string) => {
+    try {
+      await notificationService.deleteNotification(id);
+      const count = await notificationService.getUnreadCount();
+      setUnreadCount(count);
+    } catch (error) {
+      console.error('Failed to delete notification:', error);
+    }
   };
 
   const filteredNotifications = notifications.filter(notif => {
@@ -56,8 +83,6 @@ const AlertsPage: React.FC = () => {
     }
     return 0;
   });
-
-  const unreadCount = notificationService.getUnreadCount();
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">

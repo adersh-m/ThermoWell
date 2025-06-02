@@ -4,28 +4,13 @@ import notificationService, { type Notification } from "../services/Notification
 import { useAuth } from "../contexts/AuthContext";
 
 const TopBar: React.FC = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState({ code: 'en', label: 'English', flag: '🇺🇸' });
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
-  
   const notificationRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
-  const profileRef = useRef<HTMLDivElement>(null);
-  
-  // Extract user's name from context
-  const userName = user?.name || 'User';
-
-  // Handle logout
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   const languages = [
     { code: 'en', label: 'English', flag: '🇺🇸' },
@@ -65,9 +50,6 @@ const TopBar: React.FC = () => {
       }
       if (languageRef.current && !languageRef.current.contains(event.target as Node)) {
         setIsLanguageOpen(false);
-      }
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-        setIsProfileOpen(false);
       }
     };
 

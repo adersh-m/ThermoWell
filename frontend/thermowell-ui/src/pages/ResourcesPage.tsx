@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import ResourcesService from '../services/ResourcesService';
+import type { Resource, ExternalLink } from '../services/ResourcesService';
 
 const ResourcesPage: React.FC = () => {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState<string>('all');
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [externalLinks, setExternalLinks] = useState<ExternalLink[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Handle section parameter from URL
@@ -14,54 +19,25 @@ const ResourcesPage: React.FC = () => {
     }
   }, [location]);
 
-  const resources = [
-    {
-      type: 'Guides',
-      title: 'Heat Safety Handbook',
-      description: 'Comprehensive guide on heatwave preparedness and response.',
-      action: 'Download PDF',
-      category: 'general'
-    },
-    {
-      type: 'Checklist',
-      title: 'Emergency Kit List',
-      description: 'Printable checklist for assembling a heat emergency kit.',
-      action: 'View List',
-      category: 'general'
-    },
-    {
-      type: 'Guide',
-      title: 'Understanding Heatwave Risks',
-      description: 'Learn how heatwaves impact health and safety, and what makes them dangerous.',
-      action: 'Read More',
-      category: 'heatwave'
-    },
-    {
-      type: 'Information',
-      title: 'Heat Index Explained',
-      description: 'Understand the heat index and how it affects your body.',
-      action: 'Learn More',
-      category: 'heatwave'
-    }
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [resourcesData, linksData] = await Promise.all([
+          ResourcesService.fetchResources(),
+          ResourcesService.fetchExternalLinks()
+        ]);
+        setResources(resourcesData);
+        setExternalLinks(linksData);
+      } catch (error) {
+        console.error('Error fetching resources data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const externalLinks = [
-    {
-      title: 'CDC: Extreme Heat',
-      description: 'Official CDC guidance on heat safety.',
-      icon: '🏥'
-    },
-    {
-      title: 'Red Cross: Heatwave Tips',
-      description: 'Red Cross resources for heat emergencies.',
-      icon: '🚑'
-    },
-    {
-      title: 'Local Cooling Centers',
-      description: 'Find nearby cooling centers during heatwaves.',
-      icon: '🏢'
-    }
-  ];
+    fetchData();
+  }, []);
 
   const [search, setSearch] = useState('');
 
@@ -92,50 +68,49 @@ const ResourcesPage: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="mt-2 text-gray-600">Loading resources...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      {      /* Hero Section */}
-      <section className="rounded-2xl shadow-lg bg-white text-gray-800 text-center p-10 mb-12">
-        <h1 className="text-5xl font-bold mb-4">
-          {activeSection === 'heatwave' ? 'Heatwave Resources' : 'Resources'}
-        </h1>
-        <p className="text-lg font-normal max-w-2xl mx-auto mb-8">
-          {activeSection === 'heatwave' 
-            ? 'Learn about heatwave risks, safety measures, and how to protect yourself and your community.'
-            : 'Access guides, checklists, and external links to stay prepared for heatwaves.'
-          }
-        </p>
-      </section>
+      <h2 className="text-2xl font-bold mb-6">Resources</h2>
 
       {/* Section Filter */}
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex gap-2">
           <button
             onClick={() => setActiveSection('all')}
-            className={activeSection === 'all' ? 'btn-primary text-sm' : 'btn-secondary text-sm'}
+            className={`px-3 py-1 rounded text-sm ${activeSection === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
           >
             All Resources
           </button>
           <button
             onClick={() => setActiveSection('heatwave')}
-            className={activeSection === 'heatwave' ? 'btn-primary text-sm' : 'btn-secondary text-sm'}
+            className={`px-3 py-1 rounded text-sm ${activeSection === 'heatwave' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
           >
             Heatwave Info
           </button>
           <button
             onClick={() => setActiveSection('general')}
-            className={activeSection === 'general' ? 'btn-primary text-sm' : 'btn-secondary text-sm'}
+            className={`px-3 py-1 rounded text-sm ${activeSection === 'general' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
           >
             General Safety
           </button>
         </div>
-        {/* Search/Filter */}
         <input
           type="text"
-          className="input-primary w-full sm:w-80 border rounded px-3 py-2 text-sm"
           placeholder="Search resources..."
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-full sm:w-64"
         />
       </div>
 
@@ -151,11 +126,11 @@ const ResourcesPage: React.FC = () => {
             <div className="col-span-full text-center text-gray-500 py-8">No resources found.</div>
           ) : (
             filteredResources.map((resource, index) => (
-              <div key={index} className="card bg-white shadow p-6 flex flex-col">
-                <div className="text-secondary text-xs font-semibold mb-2 uppercase tracking-wide text-blue-600">{resource.type}</div>
-                <div className="subheading mb-2 flex-grow">{resource.title}</div>
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex flex-col">
+                <div className="text-blue-600 text-xs font-semibold mb-2 uppercase tracking-wide">{resource.type}</div>
+                <h3 className="text-xl font-semibold mb-2 flex-grow">{resource.title}</h3>
                 <div className="text-gray-600 mb-4 text-sm leading-relaxed flex-grow">{resource.description}</div>
-                <button className="btn-primary w-full text-sm mt-auto" onClick={() => handleResourceAction(resource)}>
+                <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors w-full text-sm mt-auto" onClick={() => handleResourceAction(resource)}>
                   {resource.action}
                 </button>
               </div>
@@ -163,6 +138,7 @@ const ResourcesPage: React.FC = () => {
           )}
         </div>
       </section>
+      
       {/* External Links */}
       <section>
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">External Resources</h2>
@@ -173,7 +149,7 @@ const ResourcesPage: React.FC = () => {
             filteredLinks.map((link, index) => (
               <a
                 key={index}
-                className="card bg-white shadow p-6 flex flex-col items-center text-center hover:bg-blue-50 hover:shadow-lg transition-all duration-200 cursor-pointer border border-gray-100 hover:border-blue-200"
+                className="bg-white p-6 rounded-lg shadow-sm flex flex-col items-center text-center hover:bg-blue-50 hover:shadow-lg transition-all duration-200 cursor-pointer border border-gray-100 hover:border-blue-200"
                 href={
                   link.title.includes('CDC')
                     ? 'https://www.cdc.gov/disasters/extremeheat/index.html'
@@ -185,13 +161,14 @@ const ResourcesPage: React.FC = () => {
                 rel="noopener noreferrer"
               >
                 <div className="text-4xl mb-3">{link.icon}</div>
-                <div className="subheading mb-2">{link.title}</div>
+                <h3 className="text-xl font-semibold mb-2">{link.title}</h3>
                 <div className="text-gray-600 text-sm leading-relaxed">{link.description}</div>
               </a>
             ))
           )}
         </div>
       </section>
+      
       {/* Footer */}
       <footer className="mt-12 pt-8 border-t border-gray-200 flex items-center">
         <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">

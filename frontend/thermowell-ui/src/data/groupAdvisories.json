@@ -1,0 +1,17 @@
+[
+  {
+    "group": "Children",
+    "title": "Hydration Alert",
+    "description": "Encourage water breaks every 30 minutes."
+  },
+  {
+    "group": "Elderly",
+    "title": "Stay Cool",
+    "description": "Use fans and avoid direct sun."
+  },
+  {
+    "group": "Outdoor Workers",
+    "title": "Rest Breaks",
+    "description": "Take breaks in shaded areas."
+  }
+]
