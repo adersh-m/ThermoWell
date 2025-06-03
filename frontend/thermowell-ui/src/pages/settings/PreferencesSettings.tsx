@@ -79,13 +79,13 @@ const PreferencesSettings: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-lg shadow-sm">
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">App Preferences</h2>
+        <h2 className="heading mb-6">App Preferences</h2>
         
         {/* Save Message */}
         {saveMessage && (
           <div className={`mb-6 p-4 rounded-lg ${
             saveMessage.includes('Error') ? 'bg-red-50 text-red-800 border border-red-200' : 'bg-green-50 text-green-800 border border-green-200'
-          }`}>
+          } caption`}>
             {saveMessage}
           </div>
         )}
@@ -94,7 +94,7 @@ const PreferencesSettings: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Theme Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Theme</label>
+              <h4 className="subheading mb-2">Theme</h4>
               <select
                 value={preferences.theme}
                 onChange={(e) => handlePreferenceChange('theme', e.target.value)}
@@ -108,7 +108,7 @@ const PreferencesSettings: React.FC = () => {
             
             {/* Temperature Unit */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Temperature Unit</label>
+              <h4 className="subheading mb-2">Temperature Unit</h4>
               <select
                 value={preferences.temperatureUnit}
                 onChange={(e) => handlePreferenceChange('temperatureUnit', e.target.value)}
@@ -121,7 +121,7 @@ const PreferencesSettings: React.FC = () => {
             
             {/* Language */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+              <h4 className="subheading mb-2">Language</h4>
               <select
                 value={preferences.language}
                 onChange={(e) => handlePreferenceChange('language', e.target.value)}
@@ -140,7 +140,7 @@ const PreferencesSettings: React.FC = () => {
             
             {/* Timezone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+              <h4 className="subheading mb-2">Timezone</h4>
               <select
                 value={preferences.timezone}
                 onChange={(e) => handlePreferenceChange('timezone', e.target.value)}
@@ -209,7 +209,7 @@ const PreferencesSettings: React.FC = () => {
             <button
               onClick={handleSavePreferences}
               disabled={saving}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="btn btn-primary flex items-center gap-2"
             >
               {saving && (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

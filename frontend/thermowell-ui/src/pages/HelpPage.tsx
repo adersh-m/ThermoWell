@@ -3,10 +3,10 @@ import HelpService from '../services/HelpService';
 import type { FAQ, ContactMethod } from '../services/HelpService';
 
 const contactImages = [
-  '/images/heat-protection.svg',
-  '/images/community.svg',
-  '/images/stay-hydrated.svg',
-  '/images/heat-warning.svg',
+  '/images/heat-protection-tips.jpg',
+  '/images/community-support.jpg',
+  '/images/hydration-tips.jpg',
+  '/images/heatwave-alert.jpg',
 ];
 
 const HelpPage: React.FC = () => {
@@ -55,13 +55,15 @@ const HelpPage: React.FC = () => {
       {/* Hero Banner */}
       <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
         <img 
-          src="/images/hero-banner.jpg" 
+          src="/images/community-support.jpg" 
           alt="ThermoWell Help Banner" 
           className="w-full h-40 object-cover object-center" 
         />
       </div>
-      <h2 className="text-2xl font-bold mb-6">Help & FAQs</h2>
-      
+      {/* Accent Bar and Intro */}
+      <div className="h-2 w-20 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full mb-4 mx-auto" />
+      <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-2 font-heading">Help & Support</h1>
+      <p className="text-center text-gray-500 mb-8 max-w-2xl mx-auto">Find answers to common questions or contact our team for personalized support during heatwaves and emergencies.</p>
       {/* FAQ Section */}
       <section className="mb-12">
         <h3 className="text-xl font-semibold mb-6">Frequently Asked Questions</h3>
@@ -76,7 +78,11 @@ const HelpPage: React.FC = () => {
                 <span className="text-blue-600 font-bold text-xl">{expandedFaq === index ? '-' : '+'}</span>
               </button>
               {expandedFaq === index && (
-                <p className="mt-3 text-gray-700">{faq.answer}</p>
+                <div className="mt-3 text-gray-700">
+                  {faq.answer}
+                  {/* Example: link to more info if available */}
+                  <a href="/help/article/faq" className="link-primary ml-2 text-sm" style={{display:'inline'}}>Learn more</a>
+                </div>
               )}
             </div>
           ))}
@@ -84,29 +90,33 @@ const HelpPage: React.FC = () => {
       </section>
       {/* Contact Methods */}
       <section>
-        <h3 className="text-xl font-semibold mb-6">Contact Us</h3>
+        <h3 className="subheading mb-6">Contact Us</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {contactMethods.map((method, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex items-center gap-4">
-              <img src={contactImages[index % contactImages.length]} alt="Contact method illustration" className="w-14 h-14 object-contain bg-gray-50 rounded-lg border" loading="lazy" />
-              <div>
-                <p className="font-semibold text-lg">{method.method}</p>
-                <p className="text-gray-600">{method.details}</p>
+          {contactMethods.map((method, index) => {
+            let actionProps = {};
+            if (method.method.toLowerCase().includes('email')) {
+              actionProps = { href: `mailto:${method.details}`, className: "link-primary block" };
+            } else if (method.method.toLowerCase().includes('hotline') || method.method.toLowerCase().includes('phone')) {
+              actionProps = { href: `tel:${method.details.replace(/[^+\d]/g, '')}`, className: "link-primary block" };
+            } else if (method.method.toLowerCase().includes('chat')) {
+              actionProps = { href: '#live-chat', className: "link-primary block" };
+            }
+            return (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex items-center gap-4">
+                <img src={contactImages[index % contactImages.length]} alt="Contact method illustration" className="w-14 h-14 object-contain bg-gray-50 rounded-lg border" loading="lazy" />
+                <div>
+                  <p className="subheading">{method.method}</p>
+                  {Object.keys(actionProps).length > 0 ? (
+                    <a {...actionProps}>{method.details}</a>
+                  ) : (
+                    <p className="text-gray-600">{method.details}</p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
-      {/* Footer */}
-      <footer className="mt-12 pt-8 border-t border-gray-200 flex items-center">
-        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
-          AM
-        </div>
-        <div>
-          <div className="font-semibold text-gray-900">Alex Morgan</div>
-          <div className="text-gray-600 text-sm">Health Advisor</div>
-        </div>
-      </footer>
     </div>
   );
 };

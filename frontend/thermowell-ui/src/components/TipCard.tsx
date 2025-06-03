@@ -1,7 +1,10 @@
-const TipCard = ({ tip }: { tip: { title: string; description: string } }) => (
-  <div className="p-4 border rounded-md shadow mb-4 bg-blue-50">
-    <h3 className="text-lg font-semibold text-blue-800">{tip.title}</h3>
-    <p className="text-sm text-blue-700 mt-1">{tip.description}</p>
+const TipCard = ({ tip }: { tip: { title: string; description: string; icon?: string } }) => (
+  <div className="w-full">
+    <div className="flex items-center gap-2 mb-1">
+      {tip.icon && <span className="text-xl" aria-hidden>{tip.icon}</span>}
+      <h3 className="text-lg font-semibold font-heading">{tip.title}</h3>
+    </div>
+    <p className="text-primary mt-1 text-base leading-relaxed">{tip.description}</p>
   </div>
 );
 

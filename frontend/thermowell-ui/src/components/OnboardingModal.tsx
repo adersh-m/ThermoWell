@@ -61,12 +61,9 @@ export default function OnboardingModal({ onClose }: { onClose: () => void }) {
 
         {/* Content */}
         <div className="text-center">
-          <h2 id="onboarding-title" className="text-2xl font-bold text-gray-900 mb-3">
-            Welcome to ThermoWell! 🌡️
-          </h2>
-          <p id="onboarding-description" className="text-gray-600 mb-6 leading-relaxed">
-            Your comprehensive heatwave companion. Get real-time heat advisories, personalized safety tips, 
-            and access essential resources to stay cool and protected during extreme weather.
+          <h2 className="heading mb-4 text-center" id="onboarding-title">Welcome to ThermoWell</h2>
+          <p className="text-primary text-center mb-6" id="onboarding-description">
+            Your personalized heatwave health and safety companion.
           </p>
 
           {/* Features list */}
@@ -88,7 +85,7 @@ export default function OnboardingModal({ onClose }: { onClose: () => void }) {
           {/* Action buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <button
-              className="btn-primary flex-1 transform hover:scale-105 transition-transform duration-200"
+              className="btn btn-primary w-full mt-4"
               onClick={onClose}
             >
               Get Started

@@ -1,9 +1,7 @@
 import React from 'react';
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 
 const SettingsLayout: React.FC = () => {
-  const location = useLocation();
-
   const navigationItems = [
     { to: '/settings/profile', label: 'Profile', icon: '👤' },
     { to: '/settings/notifications', label: 'Notifications', icon: '🔔' },
@@ -27,8 +25,8 @@ const SettingsLayout: React.FC = () => {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                         isActive
-                          ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-700'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          ? 'bg-primary-50 text-primary-700 border-r-2 border-primary-700'
+                          : 'text-secondary hover:bg-gray-50 hover:text-primary-900'
                       }`
                     }
                   >
@@ -42,14 +40,10 @@ const SettingsLayout: React.FC = () => {
           
           {/* Quick Actions */}
           <div className="mt-6 bg-white rounded-lg shadow-sm p-4">
-            <h3 className="font-medium text-gray-900 mb-3">Quick Actions</h3>
+            <h3 className="subheading mb-3">Quick Actions</h3>
             <div className="space-y-2">
-              <button className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
-                Export Data
-              </button>
-              <button className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded">
-                Delete Account
-              </button>
+              <button className="btn btn-secondary w-full text-left">Export Data</button>
+              <button className="btn btn-secondary w-full text-left text-danger-600">Delete Account</button>
             </div>
           </div>
         </div>

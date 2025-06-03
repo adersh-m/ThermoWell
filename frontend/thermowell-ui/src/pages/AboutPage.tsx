@@ -1,24 +1,27 @@
 import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import Layout from '../components/Layout';
 
 const aboutImages = [
-  '/images/heat-warning.svg',
-  '/images/stay-hydrated.svg',
-  '/images/heat-protection.svg',
+  '/images/heatwave-alert.jpg',
+  '/images/hydration-tips.jpg',
+  '/images/heat-protection-tips.jpg',
 ];
 const partnerImages = [
-  '/images/community.svg',
-  '/images/heat-warning.svg',
-  '/images/heat-protection.svg',
-  '/images/stay-hydrated.svg',
+  '/images/community-support.jpg',
+  '/images/heatwave-alert.jpg',
+  '/images/heat-protection-tips.jpg',
+  '/images/hydration-tips.jpg',
 ];
 
 const AboutPage: React.FC = () => {
-  return (
+  const { isAuthenticated } = useAuth();
+  const content = (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Hero Banner */}
       <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
         <img 
-          src="/images/hero-banner.jpg" 
+          src="/images/health-score-banner.jpg" 
           alt="About ThermoWell Banner" 
           className="w-full h-40 object-cover object-center" 
         />
@@ -95,7 +98,7 @@ const AboutPage: React.FC = () => {
           timely, and aligned with official guidance.
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
-          {partnerImages.map((img, idx) => (
+          {partnerImages.map((img) => (
             <div key={img} className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-24">
               <img src={img} alt="Partner logo/illustration" className="h-16 object-contain" loading="lazy" />
             </div>
@@ -113,7 +116,7 @@ const AboutPage: React.FC = () => {
         <div className="mt-6">
           <a 
             href="/login" 
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+            className="btn btn-primary inline-block font-medium py-3 px-6"
           >
             Sign Up Today
           </a>
@@ -121,6 +124,10 @@ const AboutPage: React.FC = () => {
       </section>
     </div>
   );
+  if (isAuthenticated) {
+    return <Layout hideTopBar>{content}</Layout>;
+  }
+  return content;
 };
 
 export default AboutPage;

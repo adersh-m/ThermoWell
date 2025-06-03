@@ -8,23 +8,23 @@ import { useAuth } from '../contexts/AuthContext';
 
 const featureImages = [
   {
-    src: '/images/heat-warning.jpg',
-    alt: 'Heatwave Advisory',
+    src: '/images/heatwave-alert.jpg',
+    alt: 'Heatwave Alert',
     title: 'Heat Advisories',
     desc: 'Get real-time updates on heatwave conditions and safety measures.',
     link: '/advisories',
     linkText: 'View Advisories',
   },
   {
-    src: '/images/stay-hydrated.jpg',
-    alt: 'Stay Hydrated',
+    src: '/images/hydration-tips.jpg',
+    alt: 'Hydration Tips',
     title: 'Safety Tips',
     desc: 'Discover actionable tips to protect yourself and your loved ones.',
     link: '/tips',
     linkText: 'View Tips',
   },
   {
-    src: '/images/heat-protection.jpg',
+    src: '/images/heat-protection-tips.jpg',
     alt: 'Heat Protection Resources',
     title: 'Resources',
     desc: 'Access guides, checklists, and external links for heatwave preparedness.',
@@ -59,15 +59,14 @@ const HomePage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       {showOnboarding && <OnboardingModal onClose={handleCloseOnboarding} />}
-      <h1 className="heading mb-2">Welcome back, {user?.name || 'Guest'}!</h1>
 
       {/* Hero Section */}
       <section className="rounded-2xl overflow-hidden shadow-lg mb-12 relative">
         <div className="absolute inset-0 bg-hero-pattern bg-cover bg-center opacity-90"></div>
         <div className="relative z-10 text-center p-16">
-          <h1 className="text-5xl font-bold mb-4 text-white">Your Heatwave Companion:<br />ThermoWell</h1>
+          <h1 className="text-5xl font-extrabold mb-4 text-white font-heading">ThermoWell: Personalized Heatwave Safety</h1>
           <p className="text-xl font-normal max-w-2xl mx-auto mb-8 text-white">
-            Protect yourself and your community from extreme heat. ThermoWell provides real-time alerts, personalized safety tips, and essential resources to help you stay safe and healthy during heatwaves.
+            Stay safe and healthy during extreme heat. Get real-time alerts, tailored health risk assessments, and expert tips—designed just for you.
           </p>
           <Link to="/dashboard" className="inline-block bg-white hover:bg-gray-100 text-primary-500 font-medium px-8 py-3 text-lg rounded-lg shadow-md transition-colors duration-200">Get Started</Link>
         </div>

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import Layout from '../components/Layout';
 
 interface ContactFormData {
   name: string;
@@ -8,6 +10,7 @@ interface ContactFormData {
 }
 
 const ContactPage: React.FC = () => {
+  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -52,9 +55,14 @@ const ContactPage: React.FC = () => {
     }
   };
 
-  return (
+  const content = (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Contact Us</h1>
+      {/* Accent Bar and Intro */}
+      <div className="h-2 w-20 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full mb-4 mx-auto" />
+      <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-2 font-heading">Contact ThermoWell</h1>
+      <p className="text-center text-gray-500 mb-8 max-w-2xl mx-auto">
+        Reach out to our team for support, partnership, or media inquiries. We’re here to help you stay safe and informed during extreme heat events.
+      </p>
       
       <div className="grid md:grid-cols-2 gap-12">
         {/* Contact Information */}
@@ -157,7 +165,7 @@ const ContactPage: React.FC = () => {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="name" className="block caption mb-1">
                   Full Name
                 </label>
                 <input
@@ -167,12 +175,12 @@ const ContactPage: React.FC = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-primary"
                 />
               </div>
               
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" className="block caption mb-1">
                   Email Address
                 </label>
                 <input
@@ -182,12 +190,12 @@ const ContactPage: React.FC = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-primary"
                 />
               </div>
               
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="subject" className="block caption mb-1">
                   Subject
                 </label>
                 <select
@@ -196,7 +204,7 @@ const ContactPage: React.FC = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-primary"
                 >
                   <option value="">Select a subject</option>
                   <option value="General Inquiry">General Inquiry</option>
@@ -208,7 +216,7 @@ const ContactPage: React.FC = () => {
               </div>
               
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="message" className="block caption mb-1">
                   Message
                 </label>
                 <textarea
@@ -218,21 +226,19 @@ const ContactPage: React.FC = () => {
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-primary"
                 />
               </div>
-              
               {error && (
-                <div className="text-red-500 text-sm py-2">
+                <div className="text-red-500 caption py-2">
                   {error}
                 </div>
               )}
-              
               <div className="pt-2">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-70"
+                  className="btn btn-primary w-full py-3 px-4"
                 >
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
@@ -243,6 +249,11 @@ const ContactPage: React.FC = () => {
       </div>
     </div>
   );
+
+  if (isAuthenticated) {
+    return <Layout hideTopBar>{content}</Layout>;
+  }
+  return content;
 };
 
 export default ContactPage;

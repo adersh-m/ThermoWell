@@ -93,7 +93,9 @@ const TopBar: React.FC = () => {
   };
 
   return (
-    <header className="w-full flex items-center justify-between bg-white border-b border-gray-200 px-8 py-3 h-16 z-10">
+    <header className="w-full flex items-center justify-between bg-white border-b border-gray-200 px-8 py-3 h-16 z-20 shadow-sm">
+      
+
       {/* Language Selector */}
       <div className="flex items-center gap-4">
         <div className="relative" ref={languageRef}>
@@ -158,9 +160,9 @@ const TopBar: React.FC = () => {
             <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <div className="px-4 py-3 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+                  <h3 className="subheading">Notifications</h3>
                   {unreadCount > 0 && (
-                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
+                    <span className="caption bg-primary-100 text-primary-800 px-2 py-1 rounded-full font-medium">
                       {unreadCount} new
                     </span>
                   )}
@@ -243,21 +245,21 @@ const TopBar: React.FC = () => {
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <Link
                 to="/settings/profile"
-                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
+                className="block px-4 py-3 text-sm text-primary-700 hover:bg-primary-50 transition-colors duration-150"
                 onClick={() => setIsProfileOpen(false)}
               >
                 My Profile
               </Link>
               <Link
                 to="/settings"
-                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
+                className="block px-4 py-3 text-sm text-primary-700 hover:bg-primary-50 transition-colors duration-150"
                 onClick={() => setIsProfileOpen(false)}
               >
                 Settings
               </Link>
               <button
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-gray-50 transition-colors duration-150 border-t border-gray-100"
+                className="block w-full text-left px-4 py-3 text-sm text-danger-600 hover:bg-danger-50 transition-colors duration-150 border-t border-gray-100"
               >
                 Sign out
               </button>

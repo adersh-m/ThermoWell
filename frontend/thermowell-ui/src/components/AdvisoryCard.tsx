@@ -57,10 +57,9 @@ const AdvisoryCard = ({ advisoryId }: { advisoryId: number }) => {
           <span className={`badge ${severityInfo.badge} flex items-center gap-1.5 px-3 py-1`}>
             {severityInfo.icon} {advisory.severity}
           </span>
-          <span className="text-xs text-gray-500">{new Date(advisory.date).toLocaleDateString()}</span>
         </div>
-        <h3 className="text-xl font-semibold mb-2 font-heading">{advisory.title}</h3>
-        <p className="text-gray-600 line-clamp-2">{advisory.message}</p>
+        <h3 className="subheading mb-2">{advisory.title}</h3>
+        <p className="text-primary mb-4 line-clamp-2">{advisory.message}</p>
         <div className="mt-4 flex justify-end">
           <span className="text-primary-600 font-medium text-sm inline-flex items-center gap-1 hover:gap-2 transition-all">
             View Details <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

@@ -1,66 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import notificationService, { type Notification } from '../services/NotificationService';
+import NotificationService from '../services/NotificationService';
 
 const AlertsPage: React.FC = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [filter, setFilter] = useState<'all' | 'unread' | 'heatwave' | 'health' | 'emergency'>('all');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'priority'>('newest');
-  const [unreadCount, setUnreadCount] = useState<number>(0);
 
   // Load notifications from service
   useEffect(() => {
     const updateNotifications = async () => {
-      try {
-        const allNotifications = await notificationService.getAllNotifications();
-        setNotifications(allNotifications);
-        const count = await notificationService.getUnreadCount();
-        setUnreadCount(count);
-      } catch (error) {
-        console.error('Failed to load notifications:', error);
-        setNotifications([]);
-        setUnreadCount(0);
-      }
+      const allNotifications = await NotificationService.fetchNotifications();
+      setNotifications(allNotifications);
     };
 
     // Initial load
     updateNotifications();
 
     // Subscribe to changes (this will call updateNotifications when notifications change)
-    const unsubscribe = notificationService.subscribe(() => updateNotifications());
+    const unsubscribe = NotificationService.subscribe(() => updateNotifications());
 
     return unsubscribe;
   }, []);
 
-  const getSeverityColor = notificationService.getSeverityColor;
-  const getTypeIcon = notificationService.getTypeIcon;
-  const formatTimestamp = notificationService.formatTimestamp;
+  const getSeverityIndicator = NotificationService.getSeverityIndicator;
+  const getTypeIcon = NotificationService.getTypeIcon;
+  const formatTimestamp = NotificationService.formatTimestamp;
 
   const markAsRead = async (id: string) => {
     try {
-      await notificationService.markAsRead(id);
-      const count = await notificationService.getUnreadCount();
-      setUnreadCount(count);
+      await NotificationService.markAsRead(id);
+      setNotifications(await NotificationService.fetchNotifications());
     } catch (error) {
       console.error('Failed to mark notification as read:', error);
-    }
-  };
-
-  const markAllAsRead = async () => {
-    try {
-      await notificationService.markAllAsRead();
-      setUnreadCount(0);
-    } catch (error) {
-      console.error('Failed to mark all notifications as read:', error);
-    }
-  };
-
-  const deleteNotification = async (id: string) => {
-    try {
-      await notificationService.deleteNotification(id);
-      const count = await notificationService.getUnreadCount();
-      setUnreadCount(count);
-    } catch (error) {
-      console.error('Failed to delete notification:', error);
     }
   };
 
@@ -90,23 +61,10 @@ const AlertsPage: React.FC = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Alerts & Notifications</h1>
+            <h1 className="heading mb-6">Urgent Alerts</h1>
             <p className="text-gray-600">
               Stay informed about heatwave conditions, health reminders, and emergency updates
             </p>
-          </div>
-          <div className="flex items-center space-x-3">
-            {unreadCount > 0 && (
-              <button
-                onClick={markAllAsRead}
-                className="text-blue-600 hover:text-blue-800 font-medium text-sm"
-              >
-                Mark all as read
-              </button>
-            )}
-            <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
-              {unreadCount} unread
-            </div>
           </div>
         </div>
 
@@ -155,7 +113,7 @@ const AlertsPage: React.FC = () => {
           sortedNotifications.map((notification) => (
             <div
               key={notification.id}
-              className={`bg-white border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow ${
+              className={`card mb-6 ${
                 !notification.isRead ? 'border-l-4 border-l-blue-500' : ''
               }`}
             >
@@ -168,7 +126,7 @@ const AlertsPage: React.FC = () => {
                         <h3 className={`font-semibold ${!notification.isRead ? 'text-gray-900' : 'text-gray-700'}`}>
                           {notification.title}
                         </h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getSeverityColor(notification.severity)}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getSeverityIndicator(notification.severity)}`}>
                           {notification.severity.toUpperCase()}
                         </span>
                         {notification.actionRequired && (
@@ -197,14 +155,8 @@ const AlertsPage: React.FC = () => {
 
                   {notification.actionRequired && (
                     <div className="flex space-x-3">
-                      <button className="btn-primary text-sm">
-                        Take Action
-                      </button>
-                      <button 
-                        onClick={() => markAsRead(notification.id)}
-                        className="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-                      >
-                        Dismiss
+                      <button className="btn btn-primary" onClick={() => markAsRead(notification.id)}>
+                        Acknowledge
                       </button>
                     </div>
                   )}
@@ -220,13 +172,6 @@ const AlertsPage: React.FC = () => {
                       ✓
                     </button>
                   )}
-                  <button
-                    onClick={() => deleteNotification(notification.id)}
-                    className="text-gray-400 hover:text-red-600 text-sm"
-                    title="Delete notification"
-                  >
-                    ✕
-                  </button>
                 </div>
               </div>
             </div>

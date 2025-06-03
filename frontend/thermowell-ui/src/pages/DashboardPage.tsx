@@ -2,6 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import TemperatureGauge from "../components/TemperatureGauge";
 import HeatIndexVisualizer from "../components/HeatIndexVisualizer";
 import { DashboardService } from "../services/DashboardService";
+import { useNavigate } from 'react-router-dom';
 
 // Define interface that matches what we're actually using in the component
 interface VulnerableGroupDisplay {
@@ -14,20 +15,21 @@ interface VulnerableGroupDisplay {
 const HeatwaveMap = lazy(() => import("../components/HeatwaveMap"));
 
 const groupImages: Record<string, string> = {
-  'children': '/images/stay-hydrated.svg',
-  'infants & children': '/images/stay-hydrated.svg',
-  'infants': '/images/stay-hydrated.svg',
-  'elderly': '/images/heat-protection.svg',
-  'senior citizens': '/images/heat-protection.svg',
-  'seniors': '/images/heat-protection.svg',
-  'outdoor workers': '/images/heat-warning.svg',
-  'workers': '/images/heat-warning.svg',
-  'default': '/images/community.svg',
+  'children': '/images/hydration-tips.jpg',
+  'infants & children': '/images/hydration-tips.jpg',
+  'infants': '/images/hydration-tips.jpg',
+  'elderly': '/images/heat-protection-tips.jpg',
+  'senior citizens': '/images/heat-protection-tips.jpg',
+  'seniors': '/images/heat-protection-tips.jpg',
+  'outdoor workers': '/images/heatwave-alert.jpg',
+  'workers': '/images/heatwave-alert.jpg',
+  'default': '/images/community-support.jpg',
 };
 
 const DashboardPage: React.FC = () => {
 	const [selectedRegion, setSelectedRegion] = useState("Manila");
 	const [vulnerableGroups, setVulnerableGroups] = useState<VulnerableGroupDisplay[]>([]);
+	const navigate = useNavigate();
 	
 	// Helper function to map group names to corresponding emoji icons
 	const mapGroupToIcon = (groupName: string): string => {
@@ -74,25 +76,23 @@ const DashboardPage: React.FC = () => {
 		loadVulnerableGroups();
 	}, []);
 
-	// Helper for navigation
-	const navigateTo = (path: string) => {
-		window.location.href = path;
-	};
-
 	// Static content matching the wireframe (no sidebar)
 	return (
 		<div className="max-w-6xl mx-auto px-4 py-8">
 			{/* Hero Banner */}
 			<div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
 				<img 
-					src="/images/hero-banner.jpg" 
+					src="/images/heatwave-alert.jpg" 
 					alt="ThermoWell Heatwave Dashboard Banner" 
 					className="w-full h-56 md:h-72 object-cover object-center" 
 				/>
 			</div>
-			<h1 className="text-3xl md:text-4xl font-bold text-center mb-10">
+			<h1 className="text-3xl md:text-4xl font-bold text-center mb-2">
 				Current Heatwave Status
 			</h1>
+      <p className="text-center text-gray-500 mb-10 max-w-2xl mx-auto">
+        Monitor real-time heatwave conditions, urgent alerts, and resources for your area. Take action quickly to stay safe.
+      </p>
 			{/* Status Cards and Visualizations */}
 			<div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
 				{/* Temperature Gauge - 5 columns on medium+ screens */}
@@ -151,7 +151,7 @@ const DashboardPage: React.FC = () => {
 					
 					<button 
 						className="w-full flex items-center justify-center btn-primary text-sm py-2"
-						onClick={() => navigateTo('/advisories')}
+						onClick={() => navigate('/advisories')}
 					>
 						View All Alerts
 					</button>
@@ -165,43 +165,13 @@ const DashboardPage: React.FC = () => {
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
 						</svg>
 					</div>
-					<h2 className="text-2xl font-semibold font-heading text-neutral-800 text-center">
+					<h2 className="heading text-center">
 						Vulnerable Groups
 					</h2>
 				</div>
 				
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 					{vulnerableGroups.map((group) => {
-						// Map icons to SVG for consistent look
-						const iconSvg = () => {
-							switch(group.icon) {
-								case "👶": 
-									return (
-										<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-											<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-										</svg>
-									);
-								case "👴": 
-									return (
-										<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-											<path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-										</svg>
-									);
-								case "👷": 
-									return (
-										<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-											<path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd" />
-											<path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
-										</svg>
-									);
-								default: 
-									return (
-										<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-											<path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-										</svg>
-									);
-							}
-						};
 						// Pick image for group
 						const groupImg = groupImages[group.label.toLowerCase()] || groupImages['default'];
 						
@@ -217,24 +187,21 @@ const DashboardPage: React.FC = () => {
 										className="w-12 h-12 rounded-lg object-contain bg-gray-50 mr-3 border"
 										loading="lazy"
 									/>
-									<span className="text-neutral-700 font-medium font-heading">
+									<div className="subheading font-heading">
 										{group.label}
-									</span>
+									</div>
 								</div>
-								<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
+								<div className="heading mb-2">
 									{group.title}
 								</div>
-								<div className="text-neutral-600 text-sm mb-6 flex-grow">
+								<div className="text-primary text-sm mb-6 flex-grow">
 									{group.getAdvice(selectedRegion)}
 								</div>
 								<button 
-									className="w-full flex items-center justify-center btn-primary text-sm py-2"
-									onClick={() => navigateTo(`/tips?group=${group.label.toLowerCase()}`)}
+									className="btn btn-primary w-full text-sm py-2"
+									onClick={() => navigate(`/tips?group=${group.label.toLowerCase()}`)}
 								>
 									<span className="mr-1">View Advice</span>
-									<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-									</svg>
 								</button>
 							</div>
 						);
@@ -243,8 +210,8 @@ const DashboardPage: React.FC = () => {
 				
 				<div className="flex justify-center">
 					<button 
-						className="btn-secondary text-sm flex items-center gap-2"
-						onClick={() => navigateTo('/resources/vulnerable-groups')}
+						className="btn btn-secondary text-sm flex items-center gap-2"
+						onClick={() => navigate('/resources/vulnerable-groups')}
 					>
 						View All Resources
 						<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -276,7 +243,7 @@ const DashboardPage: React.FC = () => {
 						</div>
 						
 						<button
-							className="btn-primary text-sm flex items-center gap-1 whitespace-nowrap"
+							className="btn btn-primary text-sm flex items-center gap-1 whitespace-nowrap"
 							onClick={() => {
 								const csv = `Region,Status,Temperature,FeelsLike\n${selectedRegion},Extreme Heat,41,44`;
 								const blob = new Blob([csv], { type: "text/csv" });
@@ -295,7 +262,7 @@ const DashboardPage: React.FC = () => {
 						</button>
 						
 						<button
-							className="btn-secondary text-sm flex items-center gap-1"
+							className="btn btn-secondary text-sm flex items-center gap-1"
 							onClick={() => {
 								navigator.clipboard.writeText(
 									window.location.href + `?region=${selectedRegion}`
@@ -325,103 +292,62 @@ const DashboardPage: React.FC = () => {
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
 						</svg>
 					</div>
-					<h2 className="text-2xl font-semibold font-heading text-neutral-800 text-center">
+					<h2 className="heading text-center">
 						Educational Resources
 					</h2>
 				</div>
-				
+				{/* Resource cards with navigation handlers */}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-					<div className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
-						<img src="/images/heat-warning.svg" alt="Heat Warning" className="h-40 w-full object-contain bg-gray-50" loading="lazy" />
-						<div className="p-6">
-							<div className="flex items-center mb-3">
-								<span className="text-danger font-medium font-heading">Heatwave</span>
+					{[
+						{
+							img: "/images/heat-warning.svg",
+							alt: "Heat Warning",
+							tag: "Heatwave",
+							tagClass: "text-danger",
+							title: "What is a Heatwave?",
+							desc: "Learn about heatwaves, their causes, and how they impact health and daily life.",
+							btn: "Learn More",
+							onClick: () => navigate("/resources/heatwave-basics")
+						},
+						{
+							img: "/images/stay-hydrated.svg",
+							alt: "Stay Hydrated",
+							tag: "Hydration",
+							tagClass: "text-primary-600",
+							title: "Stay Hydrated",
+							desc: "Tips and best practices to keep yourself and your family hydrated during extreme heat.",
+							btn: "Hydration Tips",
+							onClick: () => navigate("/tips?group=hydration")
+						},
+						{
+							img: "/images/community.svg",
+							alt: "Community Support",
+							tag: "Community",
+							tagClass: "text-success",
+							title: "Community Support",
+							desc: "Find local cooling centers, support groups, and resources to stay safe together.",
+							btn: "Find Support",
+							onClick: () => navigate("/resources/community-support")
+						}
+					].map((card) => (
+						<div key={card.title} className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
+							<img src={card.img} alt={card.alt} className="h-40 w-full object-contain bg-gray-50" loading="lazy" />
+							<div className="p-6">
+								<div className="flex items-center mb-3">
+									<span className={card.tagClass + " font-medium font-heading"}>{card.tag}</span>
+								</div>
+								<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
+									{card.title}
+								</div>
+								<div className="text-neutral-600 text-sm mb-6 flex-grow">
+									{card.desc}
+								</div>
+								<button className="btn btn-primary text-sm w-full" onClick={card.onClick}>{card.btn}</button>
 							</div>
-							<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
-								What is a Heatwave?
-							</div>
-							<div className="text-neutral-600 text-sm mb-6 flex-grow">
-								Learn about heatwaves, their causes, and how they impact health and daily life.
-							</div>
-							<button className="btn-primary text-sm w-full">Learn More</button>
 						</div>
-					</div>
-					<div className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
-						<img src="/images/stay-hydrated.svg" alt="Stay Hydrated" className="h-40 w-full object-contain bg-gray-50" loading="lazy" />
-						<div className="p-6">
-							<div className="flex items-center mb-3">
-								<span className="text-primary-600 font-medium font-heading">Hydration</span>
-							</div>
-							<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
-								Stay Hydrated
-							</div>
-							<div className="text-neutral-600 text-sm mb-6 flex-grow">
-								Tips and best practices to keep yourself and your family hydrated during extreme heat.
-							</div>
-							<button className="btn-primary text-sm w-full">Hydration Tips</button>
-						</div>
-					</div>
-					<div className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
-						<img src="/images/community.svg" alt="Community Support" className="h-40 w-full object-contain bg-gray-50" loading="lazy" />
-						<div className="p-6">
-							<div className="flex items-center mb-3">
-								<span className="text-success font-medium font-heading">Community</span>
-							</div>
-							<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
-								Community Support
-							</div>
-							<div className="text-neutral-600 text-sm mb-6 flex-grow">
-								Find local cooling centers, support groups, and resources to stay safe together.
-							</div>
-							<button className="btn-primary text-sm w-full">Find Support</button>
-						</div>
-					</div>
+					))}
 				</div>
 			</section>
-			
-			{/* Health Advisor Footer */}
-			<footer className="mt-12 pt-6 border-t border-neutral-200">
-				<div className="bg-neutral-50 rounded-xl p-6 flex flex-col md:flex-row items-center md:justify-between">
-					<div className="flex items-center mb-4 md:mb-0">
-						<div className="w-16 h-16 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-xl mr-4 shadow-md">
-							AM
-						</div>
-						<div>
-							<div className="font-semibold font-heading text-neutral-900 text-lg">Alex Morgan</div>
-							<div className="text-neutral-600">Health Advisor</div>
-							<div className="flex items-center mt-1">
-								<span className="text-xs bg-primary-500 text-white px-2 py-0.5 rounded-full mr-2">Certified</span>
-								<span className="text-xs text-neutral-500">Available 24/7 for emergencies</span>
-							</div>
-						</div>
-					</div>
-					
-					<div className="flex flex-col md:flex-row items-center gap-3">
-						<button 
-							className="btn-primary text-sm flex items-center gap-1 w-full md:w-auto"
-							onClick={() => navigateTo('/contact')}
-						>
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-							</svg>
-							Contact Advisor
-						</button>
-						<button 
-							className="btn-secondary text-sm flex items-center gap-1 w-full md:w-auto"
-							onClick={() => navigateTo('/health-assessment')}
-						>
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-							</svg>
-							Health Assessment
-						</button>
-					</div>
-				</div>
-				
-				<div className="mt-6 text-center text-neutral-500 text-sm">
-					© 2025 ThermoWell - Heatwave Advisory System. Last updated: June 2, 2025
-				</div>
-			</footer>
 		</div>
 	);
 };

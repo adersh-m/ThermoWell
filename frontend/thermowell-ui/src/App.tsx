@@ -152,6 +152,26 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AboutPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ContactPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
         
         {/* Settings Routes - Separate Pages Architecture */}
         <Route

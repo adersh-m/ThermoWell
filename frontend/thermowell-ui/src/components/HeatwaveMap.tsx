@@ -108,7 +108,7 @@ const HeatwaveMap: React.FC<HeatwaveMapProps> = ({ onRegionChange }) => {
   return (
     <div
       className="heatwave-map bg-white rounded-xl border border-neutral-200 shadow p-0 flex flex-col items-center justify-center mb-12 w-full overflow-hidden"
-      style={{ height: 450, ['--heat-color' as any]: getHeatColor(selectedRegion.heatIndexLevel) }}
+      style={{ ['--heat-color' as any]: getHeatColor(selectedRegion.heatIndexLevel) }}
     >
       <div className="w-full flex items-center justify-between px-6 py-3 bg-neutral-50 border-b border-neutral-200">
         <div className="flex items-center">

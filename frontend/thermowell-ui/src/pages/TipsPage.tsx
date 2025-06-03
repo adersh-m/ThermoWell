@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import TipsService from "../services/TipsService";
+import TipCard from "../components/TipCard";
 
 const tipImages = [
-  '/images/stay-hydrated.svg',
-  '/images/heat-protection.svg',
-  '/images/heat-warning.svg',
-  '/images/community.svg',
+  '/images/hydration-tips.jpg',
+  '/images/heat-protection-tips.jpg',
+  '/images/heatwave-alert.jpg',
+  '/images/community-support.jpg',
 ];
 
 const TipsPage: React.FC = () => {
@@ -13,39 +14,39 @@ const TipsPage: React.FC = () => {
 
   useEffect(() => {
     TipsService.fetchTips().then((tips) => {
-      // Add category to each tip for consistency
-      const tipsWithCategory = tips.map(tip => ({ ...tip, category: "General" }));
+      // Remove duplicate tips by title
+      const uniqueTips = tips.filter((tip, idx, arr) => arr.findIndex(t => t.title === tip.title) === idx);
+      const tipsWithCategory = uniqueTips.map(tip => ({ ...tip, category: "General" }));
       setGeneralTips(tipsWithCategory);
     });
   }, []);
-
-  // Helper for tip actions (future: save/favorite, read more)
-  const handleTipAction = (tip: typeof generalTips[0]) => {
-    alert(`More info about: ${tip.title}`);
-  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Hero Banner */}
       <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
         <img 
-          src="/images/hero-banner.jpg" 
+          src="/images/hydration-tips.jpg" 
           alt="ThermoWell Tips Banner" 
           className="w-full h-40 object-cover object-center" 
         />
       </div>
-      <h2 className="text-2xl font-bold mb-6">Safety Tips</h2>
-
+      {/* Accent Bar and Intro */}
+      <div className="h-2 w-20 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full mb-4 mx-auto" />
+      <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-2 font-heading">Heat Safety Tips</h1>
+      <p className="text-center text-gray-500 mb-8 max-w-2xl mx-auto">Practical, expert-backed tips to help you stay safe and healthy during extreme heat events.</p>
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {generalTips.length === 0 ? (
-          <div className="col-span-full text-center text-gray-500 py-8">Loading tips...</div>
+          <div className="col-span-full text-center text-secondary py-8">Loading tips...</div>
         ) : (
           generalTips.map((tip, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex flex-col">
+            <div key={index} className="bg-white rounded-xl p-6 shadow-md flex flex-col items-start border border-gray-100 transition-shadow duration-200 hover:shadow-lg">
               <img src={tipImages[index % tipImages.length]} alt="Tip illustration" className="w-full h-24 object-contain mb-4 bg-gray-50 rounded" loading="lazy" />
-              <h3 className="text-xl font-semibold mb-3">{tip.title}</h3>
-              <div className="text-gray-600 mb-4 flex-grow">{tip.description}</div>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm mt-auto" onClick={() => handleTipAction(tip)}>Read More</button>
+              <div className="flex items-center gap-2 mb-2">
+                {tip.category && <span className="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-gray-900">{tip.category}</span>}
+              </div>
+              <TipCard tip={tip} />
+              <button className="btn btn-primary text-sm mt-2 self-start" disabled title="Coming soon: More details for this tip">Read More</button>
             </div>
           ))
         )}

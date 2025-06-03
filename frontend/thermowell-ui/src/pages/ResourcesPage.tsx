@@ -4,11 +4,11 @@ import ResourcesService from '../services/ResourcesService';
 import type { Resource, ExternalLink } from '../services/ResourcesService';
 
 const resourceImages: Record<string, string> = {
-  'Heatwave': '/images/heat-warning.svg',
-  'Hydration': '/images/stay-hydrated.svg',
-  'Protection': '/images/heat-protection.svg',
-  'Community': '/images/community.svg',
-  'default': '/images/hero-banner.svg',
+  'Heatwave': '/images/heatwave-alert.jpg',
+  'Hydration': '/images/hydration-tips.jpg',
+  'Protection': '/images/heat-protection-tips.jpg',
+  'Community': '/images/community-support.jpg',
+  'default': '/images/hero-banner.jpg',
 };
 
 const ResourcesPage: React.FC = () => {
@@ -92,31 +92,34 @@ const ResourcesPage: React.FC = () => {
       {/* Hero Banner */}
       <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
         <img 
-          src="/images/hero-banner.jpg" 
+          src="/images/heat-protection-tips.jpg" 
           alt="ThermoWell Resources Banner" 
           className="w-full h-48 object-cover object-center" 
         />
       </div>
-      <h2 className="text-2xl font-bold mb-6">Resources</h2>
+      {/* Accent Bar and Intro */}
+      <div className="h-2 w-20 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full mb-4 mx-auto" />
+      <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-2 font-heading">Guides & Resources</h1>
+      <p className="text-center text-gray-500 mb-8 max-w-2xl mx-auto">Download official guides, checklists, and find trusted links to help you prepare for and respond to extreme heat events.</p>
 
       {/* Section Filter */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex gap-2">
           <button
             onClick={() => setActiveSection('all')}
-            className={`px-3 py-1 rounded text-sm ${activeSection === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            className={`btn btn-secondary text-sm ${activeSection === 'all' ? 'btn-primary' : ''}`}
           >
             All Resources
           </button>
           <button
             onClick={() => setActiveSection('heatwave')}
-            className={`px-3 py-1 rounded text-sm ${activeSection === 'heatwave' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            className={`btn btn-secondary text-sm ${activeSection === 'heatwave' ? 'btn-primary' : ''}`}
           >
             Heatwave Info
           </button>
           <button
             onClick={() => setActiveSection('general')}
-            className={`px-3 py-1 rounded text-sm ${activeSection === 'general' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            className={`btn btn-secondary text-sm ${activeSection === 'general' ? 'btn-primary' : ''}`}
           >
             General Safety
           </button>
@@ -126,7 +129,7 @@ const ResourcesPage: React.FC = () => {
           placeholder="Search resources..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-full sm:w-64"
+          className="input-primary"
         />
       </div>
 
@@ -149,7 +152,7 @@ const ResourcesPage: React.FC = () => {
                   <div className="text-blue-600 text-xs font-semibold mb-2 uppercase tracking-wide">{resource.type}</div>
                   <h3 className="text-xl font-semibold mb-2 flex-grow">{resource.title}</h3>
                   <div className="text-gray-600 mb-4 text-sm leading-relaxed flex-grow">{resource.description}</div>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors w-full text-sm mt-auto" onClick={() => handleResourceAction(resource)}>
+                  <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors w-full text-sm mt-auto" onClick={() => handleResourceAction(resource)} disabled={resource.action === 'Read More' || resource.action === 'Learn More'} title={resource.action === 'Read More' || resource.action === 'Learn More' ? 'Coming soon' : undefined}>
                     {resource.action}
                   </button>
                 </div>
@@ -170,13 +173,7 @@ const ResourcesPage: React.FC = () => {
               <a
                 key={index}
                 className="bg-white p-6 rounded-lg shadow-sm flex flex-col items-center text-center hover:bg-blue-50 hover:shadow-lg transition-all duration-200 cursor-pointer border border-gray-100 hover:border-blue-200"
-                href={
-                  link.title.includes('CDC')
-                    ? 'https://www.cdc.gov/disasters/extremeheat/index.html'
-                    : link.title.includes('Red Cross')
-                    ? 'https://www.redcross.org/get-help/how-to-prepare-for-emergencies/types-of-emergencies/heat-wave-safety.html'
-                    : 'https://www.google.com/maps/search/cooling+centers+near+me/'
-                }
+                href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -188,17 +185,6 @@ const ResourcesPage: React.FC = () => {
           )}
         </div>
       </section>
-      
-      {/* Footer */}
-      <footer className="mt-12 pt-8 border-t border-gray-200 flex items-center">
-        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
-          AM
-        </div>
-        <div>
-          <div className="font-semibold text-gray-900">Alex Morgan</div>
-          <div className="text-gray-600 text-sm">Health Advisor</div>
-        </div>
-      </footer>
     </div>
   );
 };
