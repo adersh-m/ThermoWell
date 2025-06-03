@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import HelpService from '../services/HelpService';
 import type { FAQ, ContactMethod } from '../services/HelpService';
 
+const contactImages = [
+  '/images/heat-protection.svg',
+  '/images/community.svg',
+  '/images/stay-hydrated.svg',
+  '/images/heat-warning.svg',
+];
+
 const HelpPage: React.FC = () => {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -45,6 +52,14 @@ const HelpPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
+      {/* Hero Banner */}
+      <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
+        <img 
+          src="/images/hero-banner.jpg" 
+          alt="ThermoWell Help Banner" 
+          className="w-full h-40 object-cover object-center" 
+        />
+      </div>
       <h2 className="text-2xl font-bold mb-6">Help & FAQs</h2>
       
       {/* FAQ Section */}
@@ -73,9 +88,7 @@ const HelpPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {contactMethods.map((method, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex items-center gap-4">
-              <div className="text-3xl bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center">
-                {method.icon}
-              </div>
+              <img src={contactImages[index % contactImages.length]} alt="Contact method illustration" className="w-14 h-14 object-contain bg-gray-50 rounded-lg border" loading="lazy" />
               <div>
                 <p className="font-semibold text-lg">{method.method}</p>
                 <p className="text-gray-600">{method.details}</p>

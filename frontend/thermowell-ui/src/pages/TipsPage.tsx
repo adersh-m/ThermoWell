@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import TipsService from "../services/TipsService";
 
+const tipImages = [
+  '/images/stay-hydrated.svg',
+  '/images/heat-protection.svg',
+  '/images/heat-warning.svg',
+  '/images/community.svg',
+];
+
 const TipsPage: React.FC = () => {
   const [generalTips, setGeneralTips] = useState<{ title: string; description: string; category?: string }[]>([]);
 
@@ -19,6 +26,14 @@ const TipsPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Hero Banner */}
+      <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
+        <img 
+          src="/images/hero-banner.jpg" 
+          alt="ThermoWell Tips Banner" 
+          className="w-full h-40 object-cover object-center" 
+        />
+      </div>
       <h2 className="text-2xl font-bold mb-6">Safety Tips</h2>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -27,6 +42,7 @@ const TipsPage: React.FC = () => {
         ) : (
           generalTips.map((tip, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex flex-col">
+              <img src={tipImages[index % tipImages.length]} alt="Tip illustration" className="w-full h-24 object-contain mb-4 bg-gray-50 rounded" loading="lazy" />
               <h3 className="text-xl font-semibold mb-3">{tip.title}</h3>
               <div className="text-gray-600 mb-4 flex-grow">{tip.description}</div>
               <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm mt-auto" onClick={() => handleTipAction(tip)}>Read More</button>

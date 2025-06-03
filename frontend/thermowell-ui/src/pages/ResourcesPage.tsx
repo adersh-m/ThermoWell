@@ -3,6 +3,14 @@ import { useLocation } from 'react-router-dom';
 import ResourcesService from '../services/ResourcesService';
 import type { Resource, ExternalLink } from '../services/ResourcesService';
 
+const resourceImages: Record<string, string> = {
+  'Heatwave': '/images/heat-warning.svg',
+  'Hydration': '/images/stay-hydrated.svg',
+  'Protection': '/images/heat-protection.svg',
+  'Community': '/images/community.svg',
+  'default': '/images/hero-banner.svg',
+};
+
 const ResourcesPage: React.FC = () => {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState<string>('all');
@@ -81,6 +89,14 @@ const ResourcesPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Hero Banner */}
+      <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
+        <img 
+          src="/images/hero-banner.jpg" 
+          alt="ThermoWell Resources Banner" 
+          className="w-full h-48 object-cover object-center" 
+        />
+      </div>
       <h2 className="text-2xl font-bold mb-6">Resources</h2>
 
       {/* Section Filter */}
@@ -125,16 +141,20 @@ const ResourcesPage: React.FC = () => {
           {filteredResources.length === 0 ? (
             <div className="col-span-full text-center text-gray-500 py-8">No resources found.</div>
           ) : (
-            filteredResources.map((resource, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex flex-col">
-                <div className="text-blue-600 text-xs font-semibold mb-2 uppercase tracking-wide">{resource.type}</div>
-                <h3 className="text-xl font-semibold mb-2 flex-grow">{resource.title}</h3>
-                <div className="text-gray-600 mb-4 text-sm leading-relaxed flex-grow">{resource.description}</div>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors w-full text-sm mt-auto" onClick={() => handleResourceAction(resource)}>
-                  {resource.action}
-                </button>
-              </div>
-            ))
+            filteredResources.map((resource, index) => {
+              const imgSrc = resourceImages[resource.category] || resourceImages['default'];
+              return (
+                <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex flex-col">
+                  <img src={imgSrc} alt={`${resource.category || 'Resource'} illustration`} className="w-full h-28 object-contain mb-4 bg-gray-50 rounded" loading="lazy" />
+                  <div className="text-blue-600 text-xs font-semibold mb-2 uppercase tracking-wide">{resource.type}</div>
+                  <h3 className="text-xl font-semibold mb-2 flex-grow">{resource.title}</h3>
+                  <div className="text-gray-600 mb-4 text-sm leading-relaxed flex-grow">{resource.description}</div>
+                  <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors w-full text-sm mt-auto" onClick={() => handleResourceAction(resource)}>
+                    {resource.action}
+                  </button>
+                </div>
+              );
+            })
           )}
         </div>
       </section>

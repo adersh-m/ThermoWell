@@ -65,21 +65,22 @@ const HeatIndexVisualizer: React.FC<HeatIndexVisualizerProps> = ({
   ) || HEAT_INDEX_LEVELS[HEAT_INDEX_LEVELS.length - 1];
 
   return (
-    <div className="heat-index-visualizer p-4 bg-white rounded-xl border border-neutral-200 shadow">
+    <div
+      className="heat-index-visualizer p-4 bg-white rounded-xl border border-neutral-200 shadow"
+      style={{ ['--hi-color' as any]: currentLevel.color }}
+    >
       <div className="flex justify-between items-center mb-3">
         <div className="text-lg font-semibold font-heading">Heat Index</div>
-        <div className="px-2 py-1 rounded-full text-xs font-medium" 
-          style={{ 
-            backgroundColor: `${currentLevel.color}20`, // 20% opacity version of the color
-            color: currentLevel.color 
-          }}>
+        <div
+          className="px-2 py-1 rounded-full text-xs font-medium bg-[color:var(--hi-color)/.13] text-[color:var(--hi-color)]"
+        >
           {currentLevel.name}
         </div>
       </div>
 
       {/* Current Heat Index */}
       <div className="flex items-center justify-center mb-4">
-        <div className="text-4xl font-bold mr-2" style={{ color: currentLevel.color }}>
+        <div className="text-4xl font-bold mr-2 text-[color:var(--hi-color)]">
           {heatIndex}
         </div>
         <div className="text-lg font-medium text-neutral-400">{unit}</div>
@@ -88,7 +89,7 @@ const HeatIndexVisualizer: React.FC<HeatIndexVisualizerProps> = ({
       {/* Risk Level */}
       <div className="text-center mb-4">
         <span className="text-sm text-neutral-500">Risk Level:</span>
-        <span className="ml-2 font-medium" style={{ color: currentLevel.color }}>
+        <span className="ml-2 font-medium text-[color:var(--hi-color)]">
           {currentLevel.riskLevel}
         </span>
       </div>
@@ -96,7 +97,7 @@ const HeatIndexVisualizer: React.FC<HeatIndexVisualizerProps> = ({
       {/* Advice */}
       {showAdvice && (
         <div className="p-3 rounded-lg text-sm" style={{ backgroundColor: `${currentLevel.color}15` }}>
-          <div className="font-medium mb-1" style={{ color: currentLevel.color }}>Recommendation:</div>
+          <div className="font-medium mb-1 text-[color:var(--hi-color)]">Recommendation:</div>
           <div className="text-neutral-700">{currentLevel.advice}</div>
         </div>
       )}

@@ -6,7 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Public pages
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
+import { LoginPage } from './pages/auth';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 
@@ -31,6 +31,9 @@ import SecuritySettings from './pages/settings/SecuritySettings';
 // Import PreferencesSettings component
 // @ts-ignore - Force TypeScript to ignore this import if it's not being recognized
 import PreferencesSettings from './pages/settings/PreferencesSettings';
+
+// Import auth pages
+import { RegisterPage, ForgotPasswordPage, ResetPasswordPage } from './pages/auth';
 
 function App() {
   return (
@@ -64,6 +67,18 @@ function App() {
               <ContactPage />
             </PublicLayout>
           }
+        />
+        <Route
+          path="/auth/register"
+          element={<RegisterPage />}
+        />
+        <Route
+          path="/auth/forgot-password"
+          element={<ForgotPasswordPage />}
+        />
+        <Route
+          path="/auth/reset-password"
+          element={<ResetPasswordPage />}
         />
         
         {/* Protected routes with authentication */}

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import notificationService, { type Notification } from "../services/NotificationService";
+import NotificationService, { type Notification } from "../services/NotificationService";
 import { useAuth } from "../contexts/AuthContext";
 
 const TopBar: React.FC = () => {
@@ -37,9 +37,9 @@ const TopBar: React.FC = () => {
   useEffect(() => {
     const updateNotifications = async () => {
       try {
-        const recentNotifications = await notificationService.getRecentNotifications(5);
+        const recentNotifications = await NotificationService.getRecentNotifications(5);
         setNotifications(recentNotifications);
-        const count = await notificationService.getUnreadCount();
+        const count = await NotificationService.getUnreadCount();
         setUnreadCount(count);
       } catch (error) {
         console.error('Failed to load notifications:', error);
@@ -52,7 +52,7 @@ const TopBar: React.FC = () => {
     updateNotifications();
 
     // Subscribe to changes
-    const unsubscribe = notificationService.subscribe(() => updateNotifications());
+    const unsubscribe = NotificationService.subscribe(() => updateNotifications());
 
     return unsubscribe;
   }, []);
@@ -83,8 +83,8 @@ const TopBar: React.FC = () => {
   const handleNotificationClick = async (notification: Notification) => {
     if (!notification.isRead) {
       try {
-        await notificationService.markAsRead(notification.id);
-        const count = await notificationService.getUnreadCount();
+        await NotificationService.markAsRead(notification.id);
+        const count = await NotificationService.getUnreadCount();
         setUnreadCount(count);
       } catch (error) {
         console.error('Failed to mark notification as read:', error);
@@ -141,7 +141,7 @@ const TopBar: React.FC = () => {
         <div className="relative" ref={notificationRef}>
           <button 
             onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-            className="relative text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-50"
+            className={`relative text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-50 ${unreadCount > 0 ? 'animate-pulse' : ''}`}
           >
             <span className="sr-only">Notifications</span>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -186,17 +186,17 @@ const TopBar: React.FC = () => {
                     >
                       <div className="flex items-start gap-3">
                         <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                          notificationService.getSeverityIndicator(notification.severity)
+                          NotificationService.getSeverityIndicator(notification.severity)
                         } ${!notification.isRead ? '' : 'opacity-30'}`} />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-sm">{notificationService.getTypeIcon(notification.type)}</span>
+                            <span className="text-sm">{NotificationService.getTypeIcon(notification.type)}</span>
                             <p className={`text-sm font-medium text-gray-900 ${!notification.isRead ? 'font-semibold' : ''}`}>
                               {notification.title}
                             </p>
                           </div>
                           <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
-                          <p className="text-xs text-gray-500 mt-1">{notificationService.formatTimestamp(notification.timestamp)}</p>
+                          <p className="text-xs text-gray-500 mt-1">{NotificationService.formatTimestamp(notification.timestamp)}</p>
                         </div>
                       </div>
                     </div>

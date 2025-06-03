@@ -1,7 +1,7 @@
 // This is a simple login page for ThermoWell
 import React, { useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -115,7 +115,7 @@ const LoginPage: React.FC = () => {
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+              <a href="/auth/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
                 Forgot your password?
               </a>
             </div>
@@ -131,6 +131,10 @@ const LoginPage: React.FC = () => {
             </button>
           </div>
         </form>
+        <div className="flex flex-col items-center mt-4 space-y-2">
+          <a href="/auth/register" className="text-primary-500 hover:underline font-medium">Don't have an account? Register</a>
+          <a href="/" className="text-gray-500 hover:underline text-sm">Back to Home</a>
+        </div>
       </div>
     </div>
   );

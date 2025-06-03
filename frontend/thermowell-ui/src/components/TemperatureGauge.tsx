@@ -50,17 +50,26 @@ const TemperatureGauge: React.FC<TemperatureGaugeProps> = ({
   ).join(', ')})`;
 
   return (
-    <div className="temperature-gauge p-4 bg-white rounded-xl border border-neutral-200 shadow">
+    <div
+      className="temperature-gauge p-4 bg-white rounded-xl border border-neutral-200 shadow"
+      style={{
+        // Set CSS variables for dynamic colors and gradient
+        // These can be used in child elements via Tailwind arbitrary values
+        ['--temp-color' as any]: tempColor,
+        ['--feelslike-color' as any]: feelsLikeColor,
+        ['--gauge-gradient' as any]: gradientBackground
+      }}
+    >
       <div className="flex justify-between items-center mb-3">
         <div className="text-lg font-semibold font-heading">Temperature</div>
         <div className="flex items-center space-x-3">
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: tempColor }}></div>
+            <div className="w-3 h-3 rounded-full mr-1 bg-[color:var(--temp-color)]"></div>
             <span className="text-sm">Current</span>
           </div>
           {feelsLike && (
             <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: feelsLikeColor }}></div>
+              <div className="w-3 h-3 rounded-full mr-1 bg-[color:var(--feelslike-color)]"></div>
               <span className="text-sm">Feels Like</span>
             </div>
           )}
@@ -69,8 +78,7 @@ const TemperatureGauge: React.FC<TemperatureGaugeProps> = ({
 
       {/* Gauge track */}
       <div 
-        className="h-6 rounded-full overflow-hidden relative mb-1"
-        style={{ background: gradientBackground }}
+        className="h-6 rounded-full overflow-hidden relative mb-1 bg-[image:var(--gauge-gradient)]"
       >
         {/* Current temperature marker */}
         <div 
@@ -97,14 +105,14 @@ const TemperatureGauge: React.FC<TemperatureGaugeProps> = ({
       {/* Current readings */}
       <div className="mt-4 flex justify-between items-center">
         <div>
-          <div className="text-2xl font-bold" style={{ color: tempColor }}>
+          <div className="text-2xl font-bold text-[color:var(--temp-color)]">
             {temperature}{unit}
           </div>
           <div className="text-xs text-neutral-500">Current</div>
         </div>
         {feelsLike && (
           <div className="text-right">
-            <div className="text-2xl font-bold" style={{ color: feelsLikeColor }}>
+            <div className="text-2xl font-bold text-[color:var(--feelslike-color)]">
               {feelsLike}{unit}
             </div>
             <div className="text-xs text-neutral-500">Feels like</div>

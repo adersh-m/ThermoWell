@@ -25,7 +25,22 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
               <li><Link to="/" className="text-gray-700 hover:text-primary-500 font-medium">Home</Link></li>
               <li><Link to="/about" className="text-gray-700 hover:text-primary-500 font-medium">About</Link></li>
               <li><Link to="/contact" className="text-gray-700 hover:text-primary-500 font-medium">Contact</Link></li>
-              <li><Link to="/login" className="btn btn-primary px-5 py-2 text-white font-medium rounded-full">Login</Link></li>
+              <li>
+                <Link
+                  to="/login"
+                  className="btn font-bold rounded-full px-5 py-2 border-2 border-primary-500 text-primary-500 bg-white shadow-lg hover:bg-primary-50 hover:border-primary-600 hover:text-primary-600 transition-all duration-200 shadow-primary"
+                >
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/auth/register"
+                  className="btn font-bold rounded-full px-5 py-2 border-2 border-secondary-500 text-secondary-500 bg-white shadow-lg hover:bg-secondary-50 hover:border-secondary-600 hover:text-secondary-600 transition-all duration-200 shadow-secondary"
+                >
+                  Register
+                </Link>
+              </li>
             </ul>
           </nav>
           
@@ -56,7 +71,8 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
                 <li><Link to="/" className="block text-gray-700 hover:text-primary-500 font-medium text-lg py-2" onClick={() => setMobileMenuOpen(false)}>Home</Link></li>
                 <li><Link to="/about" className="block text-gray-700 hover:text-primary-500 font-medium text-lg py-2" onClick={() => setMobileMenuOpen(false)}>About</Link></li>
                 <li><Link to="/contact" className="block text-gray-700 hover:text-primary-500 font-medium text-lg py-2" onClick={() => setMobileMenuOpen(false)}>Contact</Link></li>
-                <li><Link to="/login" className="btn btn-primary w-full text-center mt-4 py-3 text-white font-medium" onClick={() => setMobileMenuOpen(false)}>Login</Link></li>
+                <li><Link to="/login" className="btn btn-primary w-full text-center mt-4 py-3 font-bold" onClick={() => setMobileMenuOpen(false)}>Login</Link></li>
+                <li><Link to="/auth/register" className="btn btn-secondary w-full text-center mt-2 py-3 font-bold" onClick={() => setMobileMenuOpen(false)}>Register</Link></li>
               </ul>
             </nav>
           </div>

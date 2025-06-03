@@ -1,8 +1,28 @@
 import React from 'react';
 
+const aboutImages = [
+  '/images/heat-warning.svg',
+  '/images/stay-hydrated.svg',
+  '/images/heat-protection.svg',
+];
+const partnerImages = [
+  '/images/community.svg',
+  '/images/heat-warning.svg',
+  '/images/heat-protection.svg',
+  '/images/stay-hydrated.svg',
+];
+
 const AboutPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Hero Banner */}
+      <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
+        <img 
+          src="/images/hero-banner.jpg" 
+          alt="About ThermoWell Banner" 
+          className="w-full h-40 object-cover object-center" 
+        />
+      </div>
       <h1 className="text-3xl font-bold text-center mb-8">About ThermoWell</h1>
       
       <section className="mb-10">
@@ -35,7 +55,8 @@ const AboutPage: React.FC = () => {
       <section className="mb-10">
         <h2 className="text-2xl font-semibold mb-4">How ThermoWell Works</h2>
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <img src={aboutImages[0]} alt="Real-Time Data" className="w-16 h-16 object-contain mb-3" loading="lazy" />
             <div className="text-blue-600 text-3xl font-bold mb-2">1</div>
             <h3 className="text-xl font-medium mb-2">Real-Time Data</h3>
             <p className="text-gray-600">
@@ -44,7 +65,8 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
           
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <img src={aboutImages[1]} alt="Personalized Risk Assessment" className="w-16 h-16 object-contain mb-3" loading="lazy" />
             <div className="text-blue-600 text-3xl font-bold mb-2">2</div>
             <h3 className="text-xl font-medium mb-2">Personalized Risk Assessment</h3>
             <p className="text-gray-600">
@@ -53,7 +75,8 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
           
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <img src={aboutImages[2]} alt="Actionable Guidance" className="w-16 h-16 object-contain mb-3" loading="lazy" />
             <div className="text-blue-600 text-3xl font-bold mb-2">3</div>
             <h3 className="text-xl font-medium mb-2">Actionable Guidance</h3>
             <p className="text-gray-600">
@@ -72,18 +95,11 @@ const AboutPage: React.FC = () => {
           timely, and aligned with official guidance.
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
-          <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-24">
-            <span className="text-gray-500 font-medium">National Weather Service</span>
-          </div>
-          <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-24">
-            <span className="text-gray-500 font-medium">Public Health Department</span>
-          </div>
-          <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-24">
-            <span className="text-gray-500 font-medium">Emergency Management Agency</span>
-          </div>
-          <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-24">
-            <span className="text-gray-500 font-medium">Climate Research Institute</span>
-          </div>
+          {partnerImages.map((img, idx) => (
+            <div key={img} className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-24">
+              <img src={img} alt="Partner logo/illustration" className="h-16 object-contain" loading="lazy" />
+            </div>
+          ))}
         </div>
       </section>
       

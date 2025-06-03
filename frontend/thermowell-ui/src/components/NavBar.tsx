@@ -46,6 +46,16 @@ const NavBar: React.FC = () => {
       >
         Resources
       </NavLink>
+      <NavLink
+        to="/login"
+        className={({ isActive }) =>
+          `btn btn-primary px-5 py-2 text-white font-medium rounded-full ${
+            isActive ? "border-b-2 border-blue-600" : "hover:text-blue-600"
+          }`
+        }
+      >
+        Login
+      </NavLink>
     </nav>
   );
 };

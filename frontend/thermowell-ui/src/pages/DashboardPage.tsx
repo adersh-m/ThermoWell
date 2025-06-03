@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import HeatwaveMap from "../components/HeatwaveMap";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import TemperatureGauge from "../components/TemperatureGauge";
 import HeatIndexVisualizer from "../components/HeatIndexVisualizer";
 import { DashboardService } from "../services/DashboardService";
@@ -11,6 +10,20 @@ interface VulnerableGroupDisplay {
 	title: string;
 	getAdvice: (region: string) => string;
 }
+
+const HeatwaveMap = lazy(() => import("../components/HeatwaveMap"));
+
+const groupImages: Record<string, string> = {
+  'children': '/images/stay-hydrated.svg',
+  'infants & children': '/images/stay-hydrated.svg',
+  'infants': '/images/stay-hydrated.svg',
+  'elderly': '/images/heat-protection.svg',
+  'senior citizens': '/images/heat-protection.svg',
+  'seniors': '/images/heat-protection.svg',
+  'outdoor workers': '/images/heat-warning.svg',
+  'workers': '/images/heat-warning.svg',
+  'default': '/images/community.svg',
+};
 
 const DashboardPage: React.FC = () => {
 	const [selectedRegion, setSelectedRegion] = useState("Manila");
@@ -41,12 +54,15 @@ const DashboardPage: React.FC = () => {
 				const groups = await DashboardService.fetchVulnerableGroups();
 				
 				// Map VulnerableGroup to VulnerableGroupDisplay
-				const displayGroups: VulnerableGroupDisplay[] = groups.map(group => ({
-					icon: mapGroupToIcon(group.name),
-					label: group.name,
-					title: group.description,
-					getAdvice: group.getAdvice
-				}));
+				const displayGroups: VulnerableGroupDisplay[] = groups.map(group => {
+					const label = group.label || '';
+					return {
+						icon: mapGroupToIcon(label),
+						label,
+						title: group.description,
+						getAdvice: group.getAdvice
+					};
+				});
 				
 				setVulnerableGroups(displayGroups);
 			} catch (error) {
@@ -66,6 +82,14 @@ const DashboardPage: React.FC = () => {
 	// Static content matching the wireframe (no sidebar)
 	return (
 		<div className="max-w-6xl mx-auto px-4 py-8">
+			{/* Hero Banner */}
+			<div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg animate-fadeIn">
+				<img 
+					src="/images/hero-banner.jpg" 
+					alt="ThermoWell Heatwave Dashboard Banner" 
+					className="w-full h-56 md:h-72 object-cover object-center" 
+				/>
+			</div>
 			<h1 className="text-3xl md:text-4xl font-bold text-center mb-10">
 				Current Heatwave Status
 			</h1>
@@ -178,6 +202,8 @@ const DashboardPage: React.FC = () => {
 									);
 							}
 						};
+						// Pick image for group
+						const groupImg = groupImages[group.label.toLowerCase()] || groupImages['default'];
 						
 						return (
 							<div
@@ -185,9 +211,12 @@ const DashboardPage: React.FC = () => {
 								className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col h-full"
 							>
 								<div className="flex items-center mb-4">
-									<div className="w-10 h-10 rounded-full bg-secondary-500 bg-opacity-10 flex items-center justify-center text-secondary-500 mr-3">
-										{iconSvg()}
-									</div>
+									<img
+										src={groupImg}
+										alt={`${group.label} illustration`}
+										className="w-12 h-12 rounded-lg object-contain bg-gray-50 mr-3 border"
+										loading="lazy"
+									/>
 									<span className="text-neutral-700 font-medium font-heading">
 										{group.label}
 									</span>
@@ -282,7 +311,9 @@ const DashboardPage: React.FC = () => {
 					</div>
 				</div>
 				
-				<HeatwaveMap onRegionChange={setSelectedRegion} />
+				<Suspense fallback={<div className="flex justify-center items-center h-64">Loading map...</div>}>
+					<HeatwaveMap onRegionChange={setSelectedRegion} />
+				</Suspense>
 			</section>
 			{/* Educational Resources */}
 			<section className="mb-12">
@@ -301,92 +332,48 @@ const DashboardPage: React.FC = () => {
 				
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 					<div className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
-						<div className="h-40 bg-primary-500 bg-opacity-10 flex items-center justify-center">
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-							</svg>
-						</div>
+						<img src="/images/heat-warning.svg" alt="Heat Warning" className="h-40 w-full object-contain bg-gray-50" loading="lazy" />
 						<div className="p-6">
 							<div className="flex items-center mb-3">
-								<span className="text-primary-600 font-medium font-heading">
-									What is a Heatwave?
-								</span>
+								<span className="text-danger font-medium font-heading">Heatwave</span>
 							</div>
 							<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
-								Understanding Risks
+								What is a Heatwave?
 							</div>
-							<div className="text-neutral-600 text-sm mb-4 flex-grow">
-								Learn how heatwaves impact health and safety. Recognize the signs and take preventive action.
+							<div className="text-neutral-600 text-sm mb-6 flex-grow">
+								Learn about heatwaves, their causes, and how they impact health and daily life.
 							</div>
-							<button 
-								className="w-full flex items-center justify-center btn-primary text-sm py-2"
-								onClick={() => navigateTo('/resources/heatwave')}
-							>
-								<span className="mr-1">Read More</span>
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-								</svg>
-							</button>
+							<button className="btn-primary text-sm w-full">Learn More</button>
 						</div>
 					</div>
-					
 					<div className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
-						<div className="h-40 bg-secondary-500 bg-opacity-10 flex items-center justify-center">
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-							</svg>
-						</div>
+						<img src="/images/stay-hydrated.svg" alt="Stay Hydrated" className="h-40 w-full object-contain bg-gray-50" loading="lazy" />
 						<div className="p-6">
 							<div className="flex items-center mb-3">
-								<span className="text-secondary-600 font-medium font-heading">
-									Prevention
-								</span>
+								<span className="text-primary-600 font-medium font-heading">Hydration</span>
 							</div>
 							<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
-								Stay Safe Tips
+								Stay Hydrated
 							</div>
-							<div className="text-neutral-600 text-sm mb-4 flex-grow">
-								Simple steps to reduce heat-related risks. Learn how to protect yourself and loved ones.
+							<div className="text-neutral-600 text-sm mb-6 flex-grow">
+								Tips and best practices to keep yourself and your family hydrated during extreme heat.
 							</div>
-							<button 
-								className="w-full flex items-center justify-center btn-primary text-sm py-2"
-								onClick={() => navigateTo('/tips')}
-							>
-								<span className="mr-1">View Tips</span>
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-								</svg>
-							</button>
+							<button className="btn-primary text-sm w-full">Hydration Tips</button>
 						</div>
 					</div>
-					
 					<div className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
-						<div className="h-40 bg-info bg-opacity-10 flex items-center justify-center">
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-info" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-							</svg>
-						</div>
+						<img src="/images/community.svg" alt="Community Support" className="h-40 w-full object-contain bg-gray-50" loading="lazy" />
 						<div className="p-6">
 							<div className="flex items-center mb-3">
-								<span className="text-info font-medium font-heading">
-									Resources
-								</span>
+								<span className="text-success font-medium font-heading">Community</span>
 							</div>
 							<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
 								Community Support
 							</div>
-							<div className="text-neutral-600 text-sm mb-4 flex-grow">
-								Find cooling centers, emergency contacts, and community support services near you.
+							<div className="text-neutral-600 text-sm mb-6 flex-grow">
+								Find local cooling centers, support groups, and resources to stay safe together.
 							</div>
-							<button 
-								className="w-full flex items-center justify-center btn-primary text-sm py-2"
-								onClick={() => navigateTo('/resources/community')}
-							>
-								<span className="mr-1">Find Help</span>
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-								</svg>
-							</button>
+							<button className="btn-primary text-sm w-full">Find Support</button>
 						</div>
 					</div>
 				</div>

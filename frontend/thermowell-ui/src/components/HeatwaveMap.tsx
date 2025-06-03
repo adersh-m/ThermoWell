@@ -106,7 +106,10 @@ const HeatwaveMap: React.FC<HeatwaveMapProps> = ({ onRegionChange }) => {
   }, [selectedRegion]);
 
   return (
-    <div className="heatwave-map bg-white rounded-xl border border-neutral-200 shadow p-0 flex flex-col items-center justify-center mb-12 w-full overflow-hidden" style={{ height: 450 }}>
+    <div
+      className="heatwave-map bg-white rounded-xl border border-neutral-200 shadow p-0 flex flex-col items-center justify-center mb-12 w-full overflow-hidden"
+      style={{ height: 450, ['--heat-color' as any]: getHeatColor(selectedRegion.heatIndexLevel) }}
+    >
       <div className="w-full flex items-center justify-between px-6 py-3 bg-neutral-50 border-b border-neutral-200">
         <div className="flex items-center">
           <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white mr-3">
@@ -227,11 +230,7 @@ const HeatwaveMap: React.FC<HeatwaveMapProps> = ({ onRegionChange }) => {
 
       {/* Safety tip footer */}
       <div 
-        className="w-full px-5 py-4 border-t text-sm font-medium flex items-center"
-        style={{ 
-          backgroundColor: `${getHeatColor(selectedRegion.heatIndexLevel)}15`,
-          color: getHeatColor(selectedRegion.heatIndexLevel) 
-        }}
+        className="w-full px-5 py-4 border-t text-sm font-medium flex items-center bg-[color:var(--heat-color)/.08] text-[color:var(--heat-color)]"
       >
         <div className="mr-2">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
