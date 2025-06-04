@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NotificationService from '../services/NotificationService';
+import Button from '../components/Button';
 
 const AlertsPage: React.FC = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -155,9 +156,9 @@ const AlertsPage: React.FC = () => {
 
                   {notification.actionRequired && (
                     <div className="flex space-x-3">
-                      <button className="btn btn-primary" onClick={() => markAsRead(notification.id)}>
+                      <Button variant="primary" onClick={() => markAsRead(notification.id)}>
                         Acknowledge
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>

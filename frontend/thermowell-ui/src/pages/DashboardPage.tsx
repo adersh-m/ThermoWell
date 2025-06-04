@@ -2,7 +2,12 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import TemperatureGauge from "../components/TemperatureGauge";
 import HeatIndexVisualizer from "../components/HeatIndexVisualizer";
 import { DashboardService } from "../services/DashboardService";
+import NotificationService from '../services/NotificationService';
+import type { Notification } from '../services/NotificationService';
+import ResourcesService from '../services/ResourcesService';
+import type { Resource } from '../services/ResourcesService';
 import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
 
 // Define interface that matches what we're actually using in the component
 interface VulnerableGroupDisplay {
@@ -29,6 +34,8 @@ const groupImages: Record<string, string> = {
 const DashboardPage: React.FC = () => {
 	const [selectedRegion, setSelectedRegion] = useState("Manila");
 	const [vulnerableGroups, setVulnerableGroups] = useState<VulnerableGroupDisplay[]>([]);
+	const [alerts, setAlerts] = useState<Notification[]>([]);
+	const [resources, setResources] = useState<Resource[]>([]);
 	const navigate = useNavigate();
 	
 	// Helper function to map group names to corresponding emoji icons
@@ -72,6 +79,11 @@ const DashboardPage: React.FC = () => {
 				setVulnerableGroups([]);
 			}
 		};
+		
+		// Load alerts (2 most recent unread)
+		NotificationService.getUnreadNotifications().then(n => setAlerts(n.slice(0, 2)));
+		// Load resources (first 3)
+		ResourcesService.fetchResources().then(r => setResources(r.slice(0, 3)));
 		
 		loadVulnerableGroups();
 	}, []);
@@ -122,39 +134,31 @@ const DashboardPage: React.FC = () => {
 						<span className="text-neutral-600 text-sm font-medium font-heading">Alerts</span>
 					</div>
 					<div className="text-xl font-semibold text-neutral-900 mb-1 font-heading">
-						2 New Alerts
+						{alerts.length > 0 ? `${alerts.length} New Alert${alerts.length > 1 ? 's' : ''}` : 'No New Alerts'}
 					</div>
 					<div className="text-neutral-500 text-sm mb-4">
-						Urgent health advisories issued for your area.
+						{alerts.length > 0 ? alerts[0].message : 'No urgent health advisories.'}
 					</div>
-					
 					<div className="w-full mb-4">
-						<div className="flex items-center justify-between mb-2 bg-neutral-50 p-2 rounded-lg border-l-4 border-danger">
-							<div>
-								<div className="font-medium text-sm">Heat Emergency</div>
-								<div className="text-xs text-neutral-500">Today, 9:45 AM</div>
+						{alerts.map(alert => (
+							<div key={alert.id} className={`flex items-center justify-between mb-2 bg-neutral-50 p-2 rounded-lg border-l-4 ${alert.severity === 'critical' ? 'border-danger' : 'border-warning'}`}> 
+								<div>
+									<div className="font-medium text-sm">{alert.title}</div>
+									<div className="text-xs text-neutral-500">{NotificationService.formatTimestamp(alert.timestamp)}</div>
+								</div>
+								<div className={`badge ${alert.severity === 'critical' ? 'bg-danger' : 'bg-warning'} bg-opacity-10 text-xs px-2 py-1 rounded-full`}>
+									{alert.severity === 'critical' ? 'Urgent' : 'Important'}
+								</div>
 							</div>
-							<div className="badge bg-danger bg-opacity-10 text-danger text-xs px-2 py-1 rounded-full">
-								Urgent
-							</div>
-						</div>
-						<div className="flex items-center justify-between bg-neutral-50 p-2 rounded-lg border-l-4 border-warning">
-							<div>
-								<div className="font-medium text-sm">School Closures</div>
-								<div className="text-xs text-neutral-500">Today, 8:30 AM</div>
-							</div>
-							<div className="badge bg-warning bg-opacity-10 text-warning text-xs px-2 py-1 rounded-full">
-								Important
-							</div>
-						</div>
+						))}
 					</div>
-					
-					<button 
-						className="w-full flex items-center justify-center btn-primary text-sm py-2"
-						onClick={() => navigate('/advisories')}
+					<Button 
+						variant="primary"
+						className="w-full flex items-center justify-center text-sm py-2"
+						onClick={() => navigate('/alerts')}
 					>
 						View All Alerts
-					</button>
+					</Button>
 				</div>
 			</div>
 			{/* Vulnerable Groups */}
@@ -197,27 +201,29 @@ const DashboardPage: React.FC = () => {
 								<div className="text-primary text-sm mb-6 flex-grow">
 									{group.getAdvice(selectedRegion)}
 								</div>
-								<button 
-									className="btn btn-primary w-full text-sm py-2"
+								<Button 
+									variant="primary"
+									className="btn w-full text-sm py-2"
 									onClick={() => navigate(`/tips?group=${group.label.toLowerCase()}`)}
 								>
 									<span className="mr-1">View Advice</span>
-								</button>
+								</Button>
 							</div>
 						);
 					})}
 				</div>
 				
 				<div className="flex justify-center">
-					<button 
-						className="btn btn-secondary text-sm flex items-center gap-2"
-						onClick={() => navigate('/resources/vulnerable-groups')}
+					<Button 
+						variant="secondary"
+						className="text-sm flex items-center gap-2"
+						onClick={() => navigate('/resources')}
 					>
 						View All Resources
 						<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
 						</svg>
-					</button>
+					</Button>
 				</div>
 			</section>
 			{/* Heatwave Map & Alerts */}
@@ -242,8 +248,9 @@ const DashboardPage: React.FC = () => {
 							<span>Extreme Heat Advisory: Stay indoors 11am–4pm</span>
 						</div>
 						
-						<button
-							className="btn btn-primary text-sm flex items-center gap-1 whitespace-nowrap"
+						<Button
+							variant="primary"
+							className="text-sm flex items-center gap-1 whitespace-nowrap"
 							onClick={() => {
 								const csv = `Region,Status,Temperature,FeelsLike\n${selectedRegion},Extreme Heat,41,44`;
 								const blob = new Blob([csv], { type: "text/csv" });
@@ -259,10 +266,11 @@ const DashboardPage: React.FC = () => {
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
 							</svg>
 							Download
-						</button>
+						</Button>
 						
-						<button
-							className="btn btn-secondary text-sm flex items-center gap-1"
+						<Button
+							variant="secondary"
+							className="text-sm flex items-center gap-1"
 							onClick={() => {
 								navigator.clipboard.writeText(
 									window.location.href + `?region=${selectedRegion}`
@@ -274,7 +282,7 @@ const DashboardPage: React.FC = () => {
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
 							</svg>
 							Share
-						</button>
+						</Button>
 					</div>
 				</div>
 				
@@ -298,51 +306,21 @@ const DashboardPage: React.FC = () => {
 				</div>
 				{/* Resource cards with navigation handlers */}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-					{[
-						{
-							img: "/images/heat-warning.svg",
-							alt: "Heat Warning",
-							tag: "Heatwave",
-							tagClass: "text-danger",
-							title: "What is a Heatwave?",
-							desc: "Learn about heatwaves, their causes, and how they impact health and daily life.",
-							btn: "Learn More",
-							onClick: () => navigate("/resources/heatwave-basics")
-						},
-						{
-							img: "/images/stay-hydrated.svg",
-							alt: "Stay Hydrated",
-							tag: "Hydration",
-							tagClass: "text-primary-600",
-							title: "Stay Hydrated",
-							desc: "Tips and best practices to keep yourself and your family hydrated during extreme heat.",
-							btn: "Hydration Tips",
-							onClick: () => navigate("/tips?group=hydration")
-						},
-						{
-							img: "/images/community.svg",
-							alt: "Community Support",
-							tag: "Community",
-							tagClass: "text-success",
-							title: "Community Support",
-							desc: "Find local cooling centers, support groups, and resources to stay safe together.",
-							btn: "Find Support",
-							onClick: () => navigate("/resources/community-support")
-						}
-					].map((card) => (
-						<div key={card.title} className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
-							<img src={card.img} alt={card.alt} className="h-40 w-full object-contain bg-gray-50" loading="lazy" />
+					{resources.map((resource) => (
+						<div key={resource.title} className="bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col h-full">
 							<div className="p-6">
 								<div className="flex items-center mb-3">
-									<span className={card.tagClass + " font-medium font-heading"}>{card.tag}</span>
+									<span className="font-medium font-heading text-primary-600">{resource.type}</span>
 								</div>
 								<div className="text-xl font-semibold font-heading text-neutral-900 mb-2">
-									{card.title}
+									{resource.title}
 								</div>
 								<div className="text-neutral-600 text-sm mb-6 flex-grow">
-									{card.desc}
+									{resource.description}
 								</div>
-								<button className="btn btn-primary text-sm w-full" onClick={card.onClick}>{card.btn}</button>
+								<Button className="btn-primary text-sm w-full" onClick={() => navigate('/resources')}>
+									{resource.action}
+								</Button>
 							</div>
 						</div>
 					))}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserService, { type User, type UserPreferences } from '../services/UserService';
+import Button from '../components/Button';
 
 const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('Profile');
@@ -260,13 +261,14 @@ const SettingsPage: React.FC = () => {
               />
             </div>
 
-            <button
+            <Button
               onClick={handleProfileSave}
+              variant="primary"
+              className="px-6 py-2"
               disabled={saving}
-              className="btn btn-primary px-6 py-2"
             >
               {saving ? 'Saving...' : 'Save Changes'}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -355,13 +357,14 @@ const SettingsPage: React.FC = () => {
               </div>
             </div>
 
-            <button
+            <Button
               onClick={handleNotificationSave}
+              variant="primary"
+              className="px-6 py-2"
               disabled={saving}
-              className="btn btn-primary px-6 py-2"
             >
               {saving ? 'Saving...' : 'Save Notification Settings'}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -409,13 +412,14 @@ const SettingsPage: React.FC = () => {
                   />
                 </div>
                 
-                <button
+                <Button
                   onClick={handlePasswordChange}
+                  variant="primary"
+                  className="px-6 py-2"
                   disabled={saving || !securityForm.currentPassword || !securityForm.newPassword || !securityForm.confirmPassword}
-                  className="btn btn-primary px-6 py-2"
                 >
                   {saving ? 'Updating...' : 'Update Password'}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -521,13 +525,14 @@ const SettingsPage: React.FC = () => {
               </div>
             </div>
 
-            <button
+            <Button
               onClick={handleProfileSave}
+              variant="primary"
+              className="px-6 py-2"
               disabled={saving}
-              className="btn btn-primary px-6 py-2"
             >
               {saving ? 'Saving...' : 'Save Preferences'}
-            </button>
+            </Button>
           </div>
         </div>
       )}

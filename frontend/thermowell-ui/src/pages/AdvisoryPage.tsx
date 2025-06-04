@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AdvisoryService } from '../services/AdvisoryService';
 import type { UrgentAlert, GroupAdvisory } from '../services/AdvisoryService';
-import type { Advisory } from '../data/mockAdvisories';
+import type { Advisory } from '../services/AdvisoryService';
 
 const severityColors: Record<string, string> = {
   High: 'bg-red-500 text-white',

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import ResourcesService from '../services/ResourcesService';
 import type { Resource, ExternalLink } from '../services/ResourcesService';
+import Button from '../components/Button';
 
 const resourceImages: Record<string, string> = {
   'Heatwave': '/images/heatwave-alert.jpg',
@@ -105,24 +106,27 @@ const ResourcesPage: React.FC = () => {
       {/* Section Filter */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex gap-2">
-          <button
+          <Button
             onClick={() => setActiveSection('all')}
-            className={`btn btn-secondary text-sm ${activeSection === 'all' ? 'btn-primary' : ''}`}
+            variant={activeSection === 'all' ? 'primary' : 'secondary'}
+            className="text-sm"
           >
             All Resources
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setActiveSection('heatwave')}
-            className={`btn btn-secondary text-sm ${activeSection === 'heatwave' ? 'btn-primary' : ''}`}
+            variant={activeSection === 'heatwave' ? 'primary' : 'secondary'}
+            className="text-sm"
           >
             Heatwave Info
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setActiveSection('general')}
-            className={`btn btn-secondary text-sm ${activeSection === 'general' ? 'btn-primary' : ''}`}
+            variant={activeSection === 'general' ? 'primary' : 'secondary'}
+            className="text-sm"
           >
             General Safety
-          </button>
+          </Button>
         </div>
         <input
           type="text"
@@ -152,9 +156,15 @@ const ResourcesPage: React.FC = () => {
                   <div className="text-blue-600 text-xs font-semibold mb-2 uppercase tracking-wide">{resource.type}</div>
                   <h3 className="text-xl font-semibold mb-2 flex-grow">{resource.title}</h3>
                   <div className="text-gray-600 mb-4 text-sm leading-relaxed flex-grow">{resource.description}</div>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors w-full text-sm mt-auto" onClick={() => handleResourceAction(resource)} disabled={resource.action === 'Read More' || resource.action === 'Learn More'} title={resource.action === 'Read More' || resource.action === 'Learn More' ? 'Coming soon' : undefined}>
+                  <Button 
+                    variant="primary" 
+                    onClick={() => handleResourceAction(resource)} 
+                    disabled={resource.action === 'Read More' || resource.action === 'Learn More'} 
+                    className="w-full text-sm mt-auto"
+                    title={resource.action === 'Read More' || resource.action === 'Learn More' ? 'Coming soon' : undefined}
+                  >
                     {resource.action}
-                  </button>
+                  </Button>
                 </div>
               );
             })

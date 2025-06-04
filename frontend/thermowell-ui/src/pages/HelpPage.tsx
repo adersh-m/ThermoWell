@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HelpService from '../services/HelpService';
 import type { FAQ, ContactMethod } from '../services/HelpService';
+import Button from '../components/Button';
 
 const contactImages = [
   '/images/heat-protection-tips.jpg',
@@ -70,13 +71,14 @@ const HelpPage: React.FC = () => {
         <div className="space-y-4">
           {faqs.map((faq, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <button
+              <Button
+                variant="secondary"
                 className="w-full text-left flex justify-between items-center text-lg font-medium text-gray-800 hover:text-blue-600 transition-colors"
                 onClick={() => toggleFaq(index)}
               >
                 {faq.question}
                 <span className="text-blue-600 font-bold text-xl">{expandedFaq === index ? '-' : '+'}</span>
-              </button>
+              </Button>
               {expandedFaq === index && (
                 <div className="mt-3 text-gray-700">
                   {faq.answer}

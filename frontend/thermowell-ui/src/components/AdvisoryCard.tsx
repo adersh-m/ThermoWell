@@ -1,7 +1,7 @@
 import { AdvisoryService } from "../services/AdvisoryService";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import type { Advisory } from "../data/mockAdvisories";
+import type { Advisory } from "../services/AdvisoryService";
 
 const AdvisoryCard = ({ advisoryId }: { advisoryId: number }) => {
   const [advisory, setAdvisory] = useState<Advisory | null>(null);

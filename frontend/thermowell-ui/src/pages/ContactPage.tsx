@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
+import Button from '../components/Button';
 
 interface ContactFormData {
   name: string;
@@ -155,12 +156,13 @@ const ContactPage: React.FC = () => {
               <p className="text-gray-600 mb-6">
                 Your message has been received. We'll get back to you as soon as possible.
               </p>
-              <button
+              <Button
                 onClick={() => setIsSubmitted(false)}
-                className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                variant="primary"
+                className="w-full"
               >
                 Send Another Message
-              </button>
+              </Button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -235,13 +237,14 @@ const ContactPage: React.FC = () => {
                 </div>
               )}
               <div className="pt-2">
-                <button
+                <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn btn-primary w-full py-3 px-4"
+                  variant="primary"
+                  className="w-full py-3 px-4"
                 >
                   {isSubmitting ? 'Sending...' : 'Send Message'}
-                </button>
+                </Button>
               </div>
             </form>
           )}

@@ -1,5 +1,11 @@
 import BaseService from '../utils/baseService';
-import type { Advisory } from '../data/mockAdvisories';
+
+export type Advisory = {
+  id: number;
+  title: string;
+  message: string;
+  severity: 'Low' | 'Moderate' | 'High';
+};
 
 export type GroupAdvisory = {
   group: string;

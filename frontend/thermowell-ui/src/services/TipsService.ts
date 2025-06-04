@@ -1,8 +1,10 @@
 import BaseService from '../utils/baseService';
 
 export interface Tip {
+  id?: number;
   title: string;
   description: string;
+  group?: string;
   category?: string;
   priority?: 'low' | 'medium' | 'high';
   tags?: string[];
@@ -13,11 +15,11 @@ export default class TipsService extends BaseService {
     return this.fetchArray<Tip>('/data/tips.json');
   }
 
-  static async getTipsByCategory(category: string): Promise<Tip[]> {
-    if (!category || typeof category !== 'string') return [];
+  static async getTipsByGroup(group: string): Promise<Tip[]> {
+    if (!group || typeof group !== 'string') return [];
     try {
       const tips = await this.fetchTips();
-      return tips.filter(tip => tip.category?.toLowerCase() === category.toLowerCase());
+      return tips.filter(tip => tip.group?.toLowerCase() === group.toLowerCase());
     } catch {
       return [];
     }

@@ -18,6 +18,7 @@ import ResourcesPage from './pages/ResourcesPage';
 import TipsPage from './pages/TipsPage';
 import HelpPage from './pages/HelpPage';
 import AlertsPage from './pages/AlertsPage';
+import TipDetailPage from './pages/TipDetailPage';
 
 // Fallback settings page (for backward compatibility)
 import SettingsPage from './pages/SettingsPage';
@@ -168,6 +169,16 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <ContactPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tips/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <TipDetailPage />
               </Layout>
             </ProtectedRoute>
           }

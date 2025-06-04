@@ -1,22 +1,27 @@
 [
   {
     "title": "Stay Hydrated",
-    "description": "Drink water regularly, even if you are not thirsty."
+    "description": "Drink water regularly, even if you are not thirsty.",
+    "group": "children"
   },
   {
     "title": "Keep Cool",
-    "description": "Wear light clothing and stay in air-conditioned places."
+    "description": "Wear light clothing and stay in air-conditioned places.",
+    "group": "elderly"
   },
   {
     "title": "Stay Hydrated",
-    "description": "Drink water every 30–60 minutes, even if you're not thirsty."
+    "description": "Drink water every 30–60 minutes, even if you're not thirsty.",
+    "group": "outdoor workers"
   },
   {
     "title": "Wear Light Clothing",
-    "description": "Use light-colored, loose-fitting, breathable clothing."
+    "description": "Use light-colored, loose-fitting, breathable clothing.",
+    "group": "general"
   },
   {
     "title": "Avoid Outdoor Activities",
-    "description": "Stay indoors between 11 AM and 4 PM when heat is at its peak."
+    "description": "Stay indoors between 11 AM and 4 PM when heat is at its peak.",
+    "group": "general"
   }
 ]
