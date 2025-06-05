@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "+7zfHSOaugIfoO6ZfH18WeyH1s5YOTb+TwABYYJwa5k=",
+  "Source": "ThermoWell.Api",
+  "BasePath": "_content/ThermoWell.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
