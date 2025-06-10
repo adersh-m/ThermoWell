@@ -30,8 +30,7 @@ class NotificationService extends BaseService {
   }
 
   static async fetchNotifications(): Promise<Notification[]> {
-    console.warn('NotificationService.fetchNotifications is disabled for debugging.');
-    return [];
+    return this.fetchArray<Notification>('/api/notifications');
   }
 
   // Get unread notifications only

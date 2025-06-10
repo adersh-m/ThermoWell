@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AuthService from '../../services/AuthService';
 
 const ResetPasswordPage = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -6,14 +7,22 @@ const ResetPasswordPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    setSubmitted(true);
+
+    try {
+      await AuthService.resetPassword({ token: 'example-token', newPassword });
+      setSubmitted(true);
+    } catch (err) {
+      setError('Failed to reset password. Please try again.');
+      console.error('Reset password error:', err);
+    }
   };
 
   return (

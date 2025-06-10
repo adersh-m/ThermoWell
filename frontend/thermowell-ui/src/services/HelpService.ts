@@ -31,15 +31,15 @@ export type HelpArticle = {
 
 class HelpService extends BaseService {
   static async fetchFAQs(): Promise<FAQ[]> {
-    return this.fetchArray<FAQ>('/data/faqs.json');
+    return this.get<FAQ[]>('/api/faqs');
   }
 
   static async fetchContactMethods(): Promise<ContactMethod[]> {
-    return this.fetchArray<ContactMethod>('/data/contactMethods.json');
+    return this.get<ContactMethod[]>('/api/contact-methods');
   }
 
   static async fetchHelpArticles(): Promise<HelpArticle[]> {
-    return this.fetchArray<HelpArticle>('/data/helpArticles.json');
+    return this.get<HelpArticle[]>('/api/help-articles');
   }
 
   static async searchFAQs(query: string): Promise<FAQ[]> {

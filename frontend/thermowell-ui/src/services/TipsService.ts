@@ -12,7 +12,7 @@ export interface Tip {
 
 export default class TipsService extends BaseService {
   static async fetchTips(): Promise<Tip[]> {
-    return this.fetchArray<Tip>('/data/tips.json');
+    return this.get<Tip[]>('/api/tips');
   }
 
   static async getTipsByGroup(group: string): Promise<Tip[]> {
@@ -92,5 +92,9 @@ export default class TipsService extends BaseService {
     } catch {
       return [];
     }
+  }
+
+  static async getTipById(id: number): Promise<Tip | null> {
+    return this.get<Tip>(`/api/tips/${id}`);
   }
 }

@@ -1,7 +1,7 @@
 // This is a simple login page for ThermoWell
 import React, { useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import AuthService from '../../services/AuthService';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -9,17 +9,11 @@ const LoginPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   
-  const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   
   // Get the intended destination from the state or default to /dashboard
   const from = location.state?.from?.pathname || '/dashboard';
-  
-  // If user is already authenticated, redirect them
-  if (isAuthenticated) {
-    return <Navigate to={from} replace />;
-  }
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,16 +27,11 @@ const LoginPage: React.FC = () => {
         return;
       }
       
-      const success = await login(email, password);
-      
-      if (success) {
-        // Redirect to the page they were trying to access
-        navigate(from, { replace: true });
-      } else {
-        setError('Invalid email or password');
-      }
+      const token = await AuthService.login({ email, password });
+      localStorage.setItem('auth_token', token);
+      navigate(from, { replace: true });
     } catch (err) {
-      setError('An error occurred during login. Please try again.');
+      setError('Invalid email or password');
       console.error('Login error:', err);
     } finally {
       setIsSubmitting(false);

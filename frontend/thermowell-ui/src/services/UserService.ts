@@ -23,18 +23,17 @@ export interface UserPreferences {
 export default class UserService extends BaseService {
   // Get basic user info (name only)
   static async fetchUser(): Promise<{ name: string }> {
-    return this.fetchObject<{ name: string }>('/data/userProfile.json');
+    return this.fetchObject<{ name: string }>('/api/user-profile');
   }
 
   // Get full user profile
   static async fetchUserProfile(): Promise<User> {
-    return this.fetchObject<User>('/data/userProfile.json');
+    return this.fetchObject<User>('/api/user-profile');
   }
 
   // Update user profile (simulated - in real app would send to server)
   static async updateUserProfile(updates: Partial<User>): Promise<boolean> {
-    // Simulate update (no real backend)
-    return true;
+    return this.put<Partial<User>, boolean>('/api/user/profile', updates);
   }
 
   // Get user preferences

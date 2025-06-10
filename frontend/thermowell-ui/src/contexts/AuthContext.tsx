@@ -24,6 +24,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
 
+  // Temporary feature flag for dummy login
+  const useDummyCredentials = true;
+
   // Check authentication status on mount
   useEffect(() => {
     const checkAuth = async () => {
@@ -51,18 +54,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      // This is a simulated login - in a real app, this would validate against a backend
-      const success = await UserService.login(email, password);
-      
-      if (success) {
-        setIsAuthenticated(true);
-        const userProfile = await UserService.fetchUserProfile();
-        setUser(userProfile);
+      if (useDummyCredentials) {
+        // Use dummy credentials for login
+        if (email === 'dummyUser' && password === 'dummyPass') {
+          setIsAuthenticated(true);
+          const userProfile = await UserService.fetchUserProfile();
+          setUser(userProfile);
+          return true;
+        } else {
+          return false;
+        }
       } else {
-        setIsAuthenticated(false);
+        // Actual API call for login
+        const success = await UserService.login(email, password);
+        
+        if (success) {
+          setIsAuthenticated(true);
+          const userProfile = await UserService.fetchUserProfile();
+          setUser(userProfile);
+        } else {
+          setIsAuthenticated(false);
+        }
+        
+        return success;
       }
-      
-      return success;
     } catch (error) {
       console.error('Login failed:', error);
       setIsAuthenticated(false);

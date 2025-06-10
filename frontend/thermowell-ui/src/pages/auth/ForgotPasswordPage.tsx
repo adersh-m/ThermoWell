@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
+import AuthService from '../../services/AuthService';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    try {
+      await AuthService.forgotPassword({ email });
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Forgot password error:', err);
+    }
   };
 
   return (

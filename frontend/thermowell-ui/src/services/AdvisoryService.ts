@@ -30,25 +30,19 @@ export type CurrentAdvisory = {
 
 export class AdvisoryService extends BaseService {
   static async fetchAdvisories(): Promise<Advisory[]> {
-    return this.fetchArray<Advisory>('/data/advisories.json');
+    return this.get<Advisory[]>('/api/advisories');
   }
 
   static async fetchGroupAdvisories(): Promise<GroupAdvisory[]> {
-    return this.fetchArray<GroupAdvisory>('/data/groupAdvisories.json');
+    return this.get<GroupAdvisory[]>('/api/group-advisories');
   }
 
   static async fetchUrgentAlerts(): Promise<UrgentAlert[]> {
-    return this.fetchArray<UrgentAlert>('/data/urgentAlerts.json');
+    return this.get<UrgentAlert[]>('/api/urgent-alerts');
   }
 
   static async getAdvisoryById(id: number): Promise<Advisory | null> {
-    if (typeof id !== 'number' || !Number.isInteger(id) || id <= 0) return null;
-    try {
-      const advisories = await this.fetchAdvisories();
-      return advisories.find((adv) => adv.id === id) || null;
-    } catch {
-      return null;
-    }
+    return this.get<Advisory>(`/api/advisories/${id}`);
   }
 
   static async fetchCurrentAdvisory(): Promise<CurrentAdvisory> {

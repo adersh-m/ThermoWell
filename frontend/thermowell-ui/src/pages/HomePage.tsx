@@ -4,7 +4,6 @@ import AdvisoryCard from '../components/AdvisoryCard';
 import OnboardingModal from '../components/OnboardingModal';
 import { AdvisoryService } from '../services/AdvisoryService';
 import type { Advisory } from '../services/AdvisoryService';
-import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
 
 const featureImages = [
@@ -35,19 +34,14 @@ const featureImages = [
 ];
 
 const HomePage: React.FC = () => {
-	const { isAuthenticated, user: authUser } = useAuth();
 	const [advisories, setAdvisories] = useState<Advisory[]>([]);
 	const [showOnboarding, setShowOnboarding] = useState(
 		!localStorage.getItem('onboardingComplete')
 	);
 
 	useEffect(() => {
-		if (isAuthenticated) {
-			// Use user from AuthContext if available
-			authUser;
-		}
 		AdvisoryService.fetchAdvisories().then((data) => setAdvisories(data));
-	}, [isAuthenticated, authUser]);
+	}, []);
 
 	const handleCloseOnboarding = () => {
 		localStorage.setItem('onboardingComplete', 'true');

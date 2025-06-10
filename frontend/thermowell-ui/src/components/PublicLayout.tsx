@@ -84,17 +84,6 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
           {children}
         </main>
       </div>
-      <footer className="bg-white border-t border-gray-200 p-8 mt-auto">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex gap-6 text-sm">
-            <Link to="/" className="text-gray-500 hover:text-primary-500 transition-colors">Home</Link>
-            <Link to="/about" className="text-gray-500 hover:text-primary-500 transition-colors">About</Link>
-            <Link to="/contact" className="text-gray-500 hover:text-primary-500 transition-colors">Contact</Link>
-            {isAuthenticated && <Link to="/dashboard" className="text-gray-500 hover:text-primary-500 transition-colors">Dashboard</Link>}
-          </div>
-          <div className="text-gray-400 text-xs text-center md:text-right w-full md:w-auto">© {new Date().getFullYear()} ThermoWell. All rights reserved.</div>
-        </div>
-      </footer>
     </div>
   );
 };

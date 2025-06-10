@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
 
@@ -11,7 +10,6 @@ interface ContactFormData {
 }
 
 const ContactPage: React.FC = () => {
-  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -253,9 +251,6 @@ const ContactPage: React.FC = () => {
     </div>
   );
 
-  if (isAuthenticated) {
-    return <Layout hideTopBar>{content}</Layout>;
-  }
   return content;
 };
 

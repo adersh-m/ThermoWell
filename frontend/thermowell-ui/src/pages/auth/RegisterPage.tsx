@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AuthService from '../../services/AuthService';
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');
@@ -13,11 +14,16 @@ const RegisterPage = () => {
     e.preventDefault();
     setError(null);
     setIsSubmitting(true);
-    // Simulate registration logic
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+    try {
+      await AuthService.register({ name: username, email, password });
       navigate('/login');
-    }, 1000);
+    } catch (err) {
+      setError('Registration failed. Please try again.');
+      console.error('Registration error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
