@@ -1,0 +1,43 @@
+{
+  "stats": [
+    {
+      "id": "advisories",
+      "label": "Active Advisories",
+      "value": "3",
+      "icon": "ExclamationTriangleIcon",
+      "color": "text-red-500"
+    },
+    {
+      "id": "health",
+      "label": "Health Score",
+      "value": "88%",
+      "icon": "HeartIcon",
+      "color": "text-green-500"
+    },
+    {
+      "id": "tips",
+      "label": "Tips Read",
+      "value": "5",
+      "icon": "LightBulbIcon",
+      "color": "text-yellow-500"
+    }
+  ],
+  "heatIndex": {
+    "value": "106°F",
+    "advisory": "Extreme Heat Alert – Avoid outdoor activity"
+  },
+  "quickLinks": [
+    {
+      "label": "Explore Safety Tips",
+      "to": "/tips"
+    },
+    {
+      "label": "Find Cooling Centers",
+      "to": "/resources"
+    },
+    {
+      "label": "Update Notification Settings",
+      "to": "/settings"
+    }
+  ]
+}

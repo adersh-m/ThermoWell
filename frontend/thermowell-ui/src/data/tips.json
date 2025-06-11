@@ -1,22 +1,32 @@
 [
-  {
-    "title": "Stay Hydrated",
-    "description": "Drink water regularly, even if you are not thirsty."
-  },
-  {
-    "title": "Keep Cool",
-    "description": "Wear light clothing and stay in air-conditioned places."
-  },
-  {
-    "title": "Stay Hydrated",
-    "description": "Drink water every 30–60 minutes, even if you're not thirsty."
-  },
-  {
-    "title": "Wear Light Clothing",
-    "description": "Use light-colored, loose-fitting, breathable clothing."
-  },
-  {
-    "title": "Avoid Outdoor Activities",
-    "description": "Stay indoors between 11 AM and 4 PM when heat is at its peak."
-  }
+    {
+        "id": "stay-hydrated",
+        "title": "Stay Hydrated",
+        "summary": "Drink plenty of water to stay cool.",
+        "content": "Drink at least 8 glasses of water per day.\nIf you’re out in the sun, carry a water bottle with you."
+    },
+    {
+        "id": "wear-light-clothing",
+        "title": "Wear Lightweight Clothing",
+        "summary": "Dress in loose, light-colored fabrics.",
+        "content": "Choose loose, light-colored, breathable fabrics like cotton.\nHats and sunglasses help protect you from direct sun exposure."
+    },
+    {
+        "id": "take-breaks",
+        "title": "Take Frequent Breaks",
+        "summary": "Rest in the shade if you feel overheated.",
+        "content": "When you’re outdoors, rest in the shade every 30–60 minutes.\nListen to your body—if you feel dizzy or fatigued, find a cool place to sit."
+    },
+    {
+        "id": "avoid-peak-sun-hours",
+        "title": "Avoid Peak Sun Hours",
+        "summary": "Limit outdoor activities during peak sun hours.",
+        "content": "Try to stay indoors between 10 AM and 4 PM when the sun is strongest.\nIf you must be outside, wear sunscreen with at least SPF 30."
+    },
+    {
+        "id": "use-sunscreen",
+        "title": "Use Sunscreen",
+        "summary": "Protect your skin with sunscreen.",
+        "content": "Apply a broad-spectrum sunscreen with SPF 30 or higher.\nReapply every two hours, especially after swimming or sweating."
+    }
 ]
